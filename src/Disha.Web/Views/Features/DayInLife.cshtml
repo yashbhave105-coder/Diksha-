@@ -1,0 +1,309 @@
+@model Disha.Web.Models.Entities.Career
+@{
+    ViewData["Title"] = "Day in the Life Simulator - Disha";
+    var careers = ViewBag.Careers as List<Disha.Web.Models.Entities.Career> ?? new();
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-warning text-dark px-3 py-1 rounded-pill fw-bold">🎮 Interactive Simulator</span>
+                <span class="badge bg-mint text-white px-3 py-1 rounded-pill fw-bold">3-Minute Real World Experience</span>
+            </div>
+            <h2 class="fw-bold text-navy mb-1" style="color: #0B1330;">"Day in the Life" Career Simulator</h2>
+            <p class="text-muted mb-0">Experience a realistic day on the job before committing to learning. Make real decisions!</p>
+        </div>
+        <div>
+            <div class="dropdown">
+                <button class="btn btn-outline-dark dropdown-toggle px-3 py-2 rounded-pill fw-bold" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-briefcase me-1"></i> Switch Role: @(Model?.Title ?? "Select Role")
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow">
+                    @foreach (var c in careers)
+                    {
+                        <li><a class="dropdown-item @(c.Id == Model?.Id ? "active" : "")" asp-action="DayInLife" asp-route-careerId="@c.Id">@c.Title</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    @if (Model != null)
+    {
+        <div class="row g-4">
+            <!-- Left Info Panel -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="stat-icon mint fs-2" style="width: 50px; height: 50px;">
+                            <i class="bi @(Model.Icon ?? "bi-code-slash")"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-0 text-navy">@Model.Title</h5>
+                            <span class="badge-demand">@Model.DemandBadge</span>
+                        </div>
+                    </div>
+                    <p class="text-secondary small mb-3">@Model.Summary</p>
+                    <div class="bg-light p-3 rounded-3 mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small text-muted">Typical Work:</span>
+                            <span class="small fw-bold">Practical Problem Solving</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small text-muted">Daily Environment:</span>
+                            <span class="small fw-bold">Laptop / Remote / Office</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="small text-muted">Starting Salary:</span>
+                            <span class="small text-success fw-bold">@Model.AvgSalaryRange</span>
+                        </div>
+                    </div>
+                    <a asp-controller="Careers" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm w-100 fw-bold">
+                        View Full Roadmap <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-navy text-white">
+                    <h6 class="fw-bold text-mint mb-2"><i class="bi bi-lightbulb-fill me-1"></i> Why Try This?</h6>
+                    <p class="small text-light text-opacity-80 mb-0">
+                        Most students think IT roles are about boring formulas. Real IT is about detective work, building tools that help people, and making smart choices under pressure.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Simulation Stage -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white position-relative overflow-hidden" id="simulatorCard">
+                    <!-- Progress Bar -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <span class="fw-bold text-navy" id="simTimeLabel"><i class="bi bi-clock-history me-1 text-mint"></i> 09:30 AM — Standup & First Task</span>
+                        <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-bold" id="scoreBadge">Confidence XP: 0 / 100</span>
+                    </div>
+                    <div class="progress mb-4" style="height: 8px;">
+                        <div class="progress-bar bg-success" id="simProgressBar" role="progressbar" style="width: 25%;"></div>
+                    </div>
+
+                    <!-- Scenario Content Container -->
+                    <div id="scenarioArea">
+                        <div class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-3 fw-bold" id="scenarioStage">
+                            Scenario 1 of 4: The Morning Assignment
+                        </div>
+                        <h4 class="fw-bold text-navy mb-3" id="scenarioTitle" style="color: #0B1330;">
+                            A critical issue comes up during morning review!
+                        </h4>
+                        <div class="p-3 bg-light rounded-3 border-start border-4 border-primary mb-4">
+                            <p class="mb-0 text-secondary" id="scenarioNarrative">
+                                Loading dynamic scenario...
+                            </p>
+                        </div>
+
+                        <h6 class="fw-bold text-dark mb-3">What action do you take?</h6>
+                        <div class="d-grid gap-3" id="optionsContainer">
+                            <!-- Options injected dynamically by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Feedback Box (Hidden initially) -->
+                    <div id="simFeedbackArea" class="mt-4 p-3 rounded-3 d-none">
+                        <div class="d-flex align-items-center gap-2 fw-bold mb-1" id="feedbackHeader"></div>
+                        <p class="small mb-3" id="feedbackBody"></p>
+                        <button class="btn btn-mint px-4 fw-bold" id="nextScenarioBtn">Continue to Next Hour <i class="bi bi-arrow-right ms-1"></i></button>
+                    </div>
+
+                    <!-- Final Completion Screen (Hidden initially) -->
+                    <div id="completionArea" class="text-center py-5 d-none">
+                        <div class="display-3 text-success mb-3"><i class="bi bi-trophy-fill"></i></div>
+                        <h3 class="fw-bold text-navy mb-2">Shift Completed! Outstanding Work!</h3>
+                        <p class="text-muted mb-4" id="finalVerdict">You proved you have natural instincts for this role.</p>
+                        <div class="d-flex justify-content-center gap-3 flex-wrap">
+                            <a asp-controller="Careers" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-mint px-4 py-2 fw-bold">
+                                Start Your Zero-Cost Roadmap <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                            <button class="btn btn-outline-secondary px-4 py-2 fw-bold" onclick="location.reload();">
+                                <i class="bi bi-arrow-clockwise me-1"></i> Replay Scenario
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script>
+    const roleTitle = "@(Model?.Title ?? "Junior IT Specialist")";
+    const scenarios = [
+        {
+            time: "09:30 AM — Morning Standup",
+            stage: "Scenario 1 of 4",
+            title: "Task Priority Alert",
+            narrative: `You just logged on. Your team leader posts: "Our student portal button on mobile phones is overlapping with the navigation bar, so students can't sign up!" What is your immediate first step?`,
+            options: [
+                {
+                    text: "Open Chrome Developer Tools to inspect CSS styles on mobile viewport size.",
+                    correct: true,
+                    xp: 25,
+                    title: "Excellent Problem Solving (+25 XP)",
+                    reason: "Spot on! Inspecting the CSS on mobile view instantly shows what margin or z-index is breaking without guessing."
+                },
+                {
+                    text: "Rewrite the entire navigation code from scratch in a rush.",
+                    correct: false,
+                    xp: 10,
+                    title: "Risky Approach (+10 XP)",
+                    reason: "Rewriting working code risks creating 5 new bugs. In real IT, always inspect and fix the specific CSS rule first!"
+                },
+                {
+                    text: "Ignore it and wait for someone else to notice.",
+                    correct: false,
+                    xp: 0,
+                    title: "Not Recommended (+0 XP)",
+                    reason: "Proactiveness is the #1 trait top tech companies look for in first-generation students."
+                }
+            ]
+        },
+        {
+            time: "11:45 AM — Debugging Session",
+            stage: "Scenario 2 of 4",
+            title: "An Error Code Nobody Has Seen Before",
+            narrative: `While writing code, your console outputs: "Uncaught TypeError: Cannot read property 'map' of undefined". You don't remember what this error means. How do you resolve it?`,
+            options: [
+                {
+                    text: "Panic and think you are not smart enough for software engineering.",
+                    correct: false,
+                    xp: 0,
+                    title: "Don't Give Up (+0 XP)",
+                    reason: "Every senior engineer with 15 years experience sees this error every day! It simply means your data hasn't loaded yet."
+                },
+                {
+                    text: "Search the exact error message on Google / StackOverflow and read how others handled it.",
+                    correct: true,
+                    xp: 25,
+                    title: "Pro Engineer Move! (+25 XP)",
+                    reason: "Researching errors is 50% of real tech work. You quickly discover adding an optional check '?.' solves the problem cleanly."
+                },
+                {
+                    text: "Delete that entire feature from the project.",
+                    correct: false,
+                    xp: 5,
+                    title: "Avoid Taking Shortcuts (+5 XP)",
+                    reason: "Fixing bugs builds lasting muscle memory."
+                }
+            ]
+        },
+        {
+            time: "02:30 PM — Collaboration & Code Review",
+            stage: "Scenario 3 of 4",
+            title: "Senior Teammate Feedback",
+            narrative: `A senior engineer reviews your pull request and writes: "Good start! But please add comments and rename 'x' and 'y' variables to descriptive names like 'studentName' and 'examScore'." How do you reply?`,
+            options: [
+                {
+                    text: "Feel offended and argue that short variable names save space.",
+                    correct: false,
+                    xp: 5,
+                    title: "Feedback is a Gift (+5 XP)",
+                    reason: "Code is read 10x more often than it is written. Clean readable names are vital for team collaboration."
+                },
+                {
+                    text: "Say 'Thank you for the guidance! I will update the names to be descriptive right away.'",
+                    correct: true,
+                    xp: 25,
+                    title: "Top-Tier Culture Fit! (+25 XP)",
+                    reason: "Being humble and eager to learn makes seniors love mentoring you and promotes you faster."
+                }
+            ]
+        },
+        {
+            time: "04:45 PM — End of Day Deployment",
+            stage: "Scenario 4 of 4",
+            title: "Shipping Your Code to Production",
+            narrative: `Your changes pass all automated tests! The team is ready to deploy the update so 5,000 students can use the fix. What do you do before logging off?`,
+            options: [
+                {
+                    text: "Verify the live website once after deployment and post a short status update in Slack.",
+                    correct: true,
+                    xp: 25,
+                    title: "Flawless Delivery (+25 XP)",
+                    reason: "Closing the loop with confirmation builds immense trust with management and clients."
+                },
+                {
+                    text: "Shut down the computer instantly without checking if the live build succeeded.",
+                    correct: false,
+                    xp: 10,
+                    title: "Always Double Check (+10 XP)",
+                    reason: "Taking 60 seconds to test in the live environment prevents sudden emergency phone calls in the evening."
+                }
+            ]
+        }
+    ];
+
+    let currentIdx = 0;
+    let totalScore = 0;
+
+    function renderScenario() {
+        if (currentIdx >= scenarios.length) {
+            document.getElementById('scenarioArea').classList.add('d-none');
+            document.getElementById('simFeedbackArea').classList.add('d-none');
+            document.getElementById('completionArea').classList.remove('d-none');
+            document.getElementById('finalVerdict').textContent = `You earned ${totalScore} out of 100 XP! You have natural instincts for problem-solving in ${roleTitle}.`;
+            return;
+        }
+
+        const sc = scenarios[currentIdx];
+        document.getElementById('simTimeLabel').innerHTML = `<i class="bi bi-clock-history me-1 text-mint"></i> ${sc.time}`;
+        document.getElementById('scenarioStage').textContent = sc.stage;
+        document.getElementById('scenarioTitle').textContent = sc.title;
+        document.getElementById('scenarioNarrative').textContent = sc.narrative;
+        document.getElementById('simFeedbackArea').classList.add('d-none');
+
+        const pct = Math.round(((currentIdx + 1) / scenarios.length) * 100);
+        document.getElementById('simProgressBar').style.width = pct + '%';
+
+        const optContainer = document.getElementById('optionsContainer');
+        optContainer.innerHTML = '';
+
+        sc.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-outline-dark p-3 text-start rounded-3 fw-medium d-flex align-items-center gap-3';
+            btn.innerHTML = `<span class="badge bg-secondary rounded-circle" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;">${idx + 1}</span><span>${opt.text}</span>`;
+            btn.onclick = () => selectOption(opt);
+            optContainer.appendChild(btn);
+        });
+    }
+
+    function selectOption(opt) {
+        totalScore += opt.xp;
+        document.getElementById('scoreBadge').textContent = `Confidence XP: ${totalScore} / 100`;
+
+        const feedbackArea = document.getElementById('simFeedbackArea');
+        const feedbackHeader = document.getElementById('feedbackHeader');
+        const feedbackBody = document.getElementById('feedbackBody');
+
+        feedbackArea.className = opt.correct 
+            ? 'mt-4 p-3 rounded-3 bg-success bg-opacity-10 border border-success text-success-emphasis'
+            : 'mt-4 p-3 rounded-3 bg-warning bg-opacity-10 border border-warning text-dark';
+
+        feedbackHeader.innerHTML = opt.correct 
+            ? `<i class="bi bi-check-circle-fill text-success fs-5"></i> <span>${opt.title}</span>`
+            : `<i class="bi bi-info-circle-fill text-warning fs-5"></i> <span>${opt.title}</span>`;
+
+        feedbackBody.textContent = opt.reason;
+        feedbackArea.classList.remove('d-none');
+
+        // Disable options
+        const buttons = document.getElementById('optionsContainer').getElementsByTagName('button');
+        for (let b of buttons) {
+            b.disabled = true;
+        }
+    }
+
+    document.getElementById('nextScenarioBtn').onclick = () => {
+        currentIdx++;
+        renderScenario();
+    };
+
+    renderScenario();
+</script>
+}

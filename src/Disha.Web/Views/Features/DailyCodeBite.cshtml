@@ -1,0 +1,85 @@
+@{
+    ViewData["Title"] = "Daily Code Bite Micro-Quiz - Disha";
+}
+
+<div class="container py-4">
+    <div class="text-center max-w-700 mx-auto mb-4">
+        <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+            <span class="badge bg-danger text-white px-3 py-1 rounded-pill fw-bold"><i class="bi bi-fire me-1"></i> Daily Streak: 5 Days</span>
+            <span class="badge bg-mint text-white px-3 py-1 rounded-pill fw-bold">60-Second Challenge</span>
+        </div>
+        <h2 class="fw-bold text-navy" style="color: #0B1330;">Daily Code Bite Challenge</h2>
+        <p class="text-muted">A quick 60-second puzzle every day to sharpen your technical vocabulary and problem-solving habits.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold">Today's Topic: Web Networking</span>
+                    <span class="fw-bold text-muted small"><i class="bi bi-clock me-1"></i> Under 1 Minute</span>
+                </div>
+
+                <h4 class="fw-bold text-navy mb-3" style="color: #0B1330;">
+                    What does an HTTP Status Code <code class="text-danger bg-light px-2 py-1 rounded">404</code> mean when a browser asks a server for a webpage?
+                </h4>
+
+                <div class="d-grid gap-3 mb-4" id="quizOptions">
+                    <button class="btn btn-outline-dark p-3 text-start rounded-3 fw-medium" onclick="answer(false, this)">
+                        <strong>A.</strong> The server completely crashed and burned down.
+                    </button>
+                    <button class="btn btn-outline-dark p-3 text-start rounded-3 fw-medium" onclick="answer(true, this)">
+                        <strong>B.</strong> Not Found: The server is online, but the requested page or file does not exist at that URL.
+                    </button>
+                    <button class="btn btn-outline-dark p-3 text-start rounded-3 fw-medium" onclick="answer(false, this)">
+                        <strong>C.</strong> You need to pay ₹404 to open this page.
+                    </button>
+                    <button class="btn btn-outline-dark p-3 text-start rounded-3 fw-medium" onclick="answer(false, this)">
+                        <strong>D.</strong> Your computer is not connected to any Wi-Fi.
+                    </button>
+                </div>
+
+                <!-- Explanation Box -->
+                <div id="quizResultBox" class="p-4 rounded-3 d-none">
+                    <h5 class="fw-bold mb-1" id="quizResultTitle"></h5>
+                    <p class="mb-3 small" id="quizResultText"></p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-success text-white px-3 py-2 rounded-pill fw-bold">+50 XP Added to Your Profile!</span>
+                        <a asp-controller="Features" asp-action="SkillTree" class="btn btn-navy btn-sm fw-bold">
+                            View Your Tech Skill Tree <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function answer(isCorrect, btn) {
+        const buttons = document.getElementById('quizOptions').getElementsByTagName('button');
+        for (let b of buttons) {
+            b.disabled = true;
+        }
+
+        const box = document.getElementById('quizResultBox');
+        const title = document.getElementById('quizResultTitle');
+        const text = document.getElementById('quizResultText');
+
+        if (isCorrect) {
+            btn.className = 'btn btn-success p-3 text-start rounded-3 fw-medium text-white';
+            box.className = 'p-4 rounded-3 bg-success bg-opacity-10 border border-success text-success-emphasis';
+            title.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i> Correct! Excellent Knowledge!';
+            text.textContent = 'HTTP 404 Not Found is a standard client-side error indicating that the browser could communicate with the host server, but the server could not find what was requested (often a typo in the URL or a deleted link).';
+        } else {
+            btn.className = 'btn btn-danger p-3 text-start rounded-3 fw-medium text-white';
+            box.className = 'p-4 rounded-3 bg-warning bg-opacity-10 border border-warning text-dark';
+            title.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-2"></i> Almost! Option B is the correct answer.';
+            text.textContent = '404 indicates "Not Found" — meaning the web server is alive and functioning, but the file or page path specified was not found on it.';
+        }
+
+        box.classList.remove('d-none');
+    }
+</script>
+}

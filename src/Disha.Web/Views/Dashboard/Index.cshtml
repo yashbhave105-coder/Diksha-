@@ -1,0 +1,700 @@
+@model Disha.Web.Models.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Student Dashboard - Disha";
+}
+
+<div class="container-fluid px-lg-4 py-4">
+    <!-- DEEP NAVY HERO CARD -->
+    <div class="hero-navy-card">
+        <div class="row align-items-center gy-4">
+            <div class="col-lg-8">
+                <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 px-3 py-1 rounded-pill fw-bold mb-3 small">
+                    <i class="bi bi-shield-check me-1"></i> DEBT-FREE IT CAREER GUIDANCE
+                </span>
+                <h1>Welcome back, @(Model.Student.FullName ?? Model.Student.Username)! 👋</h1>
+                <p class="hero-subtitle">
+                    You are <strong>@Model.JourneyCompletionPercentage%</strong> through your technical roadmap journey. Consistent learning everyday builds financial freedom!
+                </p>
+                <div class="d-flex flex-wrap gap-4 text-light small fw-medium">
+                    <span><i class="bi bi-check-circle-fill text-success me-1"></i> 1 Assessment Completed</span>
+                    <span><i class="bi bi-check-circle-fill text-success me-1"></i> @Model.MatchedAidList.Count Aid Grants Matched</span>
+                    <span><i class="bi bi-check-circle-fill text-success me-1"></i> 1-on-1 AI Mentor Ready</span>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="progress-ring-card ms-lg-auto" style="max-width: 340px;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-uppercase fw-bold text-secondary small" style="letter-spacing:1px;">MY PROGRESS</span>
+                        <span class="badge bg-success text-white">Active</span>
+                    </div>
+                    <div class="d-flex align-items-baseline gap-2 mb-2">
+                        <h2 class="display-6 fw-bold mb-0 text-white">@Model.JourneyCompletionPercentage%</h2>
+                        <span class="text-secondary small">1 of 4 steps completed</span>
+                    </div>
+                    <div class="progress mb-2" style="height: 8px; background: rgba(255,255,255,0.15);">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: @Model.JourneyCompletionPercentage%;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between small text-secondary">
+                        <span>Roadmap Status</span>
+                        <span class="text-white fw-bold">Step 2: Fundamentals</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW OF 4 STAT CARDS -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted small fw-bold text-uppercase">Assessment Status</span>
+                    <div class="stat-icon mint"><i class="bi bi-patch-check-fill"></i></div>
+                </div>
+                <h4 class="fw-bold mb-1">@(Model.QuizCompleted ? "Completed" : "Pending")</h4>
+                <small class="text-success"><i class="bi bi-arrow-up-right"></i> @(Model.QuizCompleted ? "Retake anytime" : "Start now (10 mins)")</small>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted small fw-bold text-uppercase">Matched Salaries</span>
+                    <div class="stat-icon orange"><i class="bi bi-currency-rupee"></i></div>
+                </div>
+                <h4 class="fw-bold mb-1">₹18k - ₹55k</h4>
+                <small class="text-danger"><i class="bi bi-shield-lock"></i> Debt-free track</small>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted small fw-bold text-uppercase">Aid Deadline</span>
+                    <div class="stat-icon purple"><i class="bi bi-clock-history"></i></div>
+                </div>
+                <h4 class="fw-bold mb-1">12 Days Left</h4>
+                <small class="text-primary"><i class="bi bi-gift-fill"></i> TCS Tech Grant</small>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="text-muted small fw-bold text-uppercase">Saved Resources</span>
+                    <div class="stat-icon blue"><i class="bi bi-bookmark-check-fill"></i></div>
+                </div>
+                <h4 class="fw-bold mb-1"><span id="savedResourcesCountSpan">@Model.SavedResourcesCount Saved</span></h4>
+                <small class="text-success"><i class="bi bi-folder-check"></i> Bookmarked</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD LAYOUT: TWO COLUMNS -->
+    <div class="row g-4">
+        <!-- LEFT COLUMN: RECOMMENDATIONS & ROADMAP -->
+        <div class="col-lg-8">
+            <!-- INTERACTIVE ASSESSMENT BANNER -->
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background: #ffffff; border-left: 4px solid #1DB88E !important;">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <h5 class="fw-bold text-navy mb-0" style="color:#0B1330;">Interactive Assessment & Quick Match</h5>
+                            <span class="badge bg-success bg-opacity-10 text-success small">Evaluated via Tag Weights</span>
+                        </div>
+                        <p class="text-muted small mb-0">Answer 12 short questions about your interests to match with top IT tracks and laptop grant schemes.</p>
+                    </div>
+                    <a asp-controller="Quiz" asp-action="Index" class="btn btn-mint fw-bold px-4 py-2 rounded-3">
+                        @(Model.QuizCompleted ? "Retake Assessment" : "Start Assessment Quiz") <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+
+                <!-- QUICK FILTER TILES -->
+                <div class="d-flex flex-wrap gap-2 mt-3 pt-3 border-top">
+                    <a asp-controller="Careers" asp-action="Index" asp-route-tag="frontend" class="btn btn-sm btn-light border fw-medium"><i class="bi bi-code-slash text-success me-1"></i> Frontend Dev</a>
+                    <a asp-controller="Careers" asp-action="Index" asp-route-tag="backend" class="btn btn-sm btn-light border fw-medium"><i class="bi bi-server text-primary me-1"></i> Backend Dev</a>
+                    <a asp-controller="Careers" asp-action="Index" asp-route-tag="cloud" class="btn btn-sm btn-light border fw-medium"><i class="bi bi-cloud-upload text-info me-1"></i> Cloud Systems</a>
+                    <a asp-controller="Careers" asp-action="Index" asp-route-tag="design" class="btn btn-sm btn-light border fw-medium"><i class="bi bi-palette text-danger me-1"></i> UI/UX Design</a>
+                    <a asp-controller="Careers" asp-action="Index" asp-route-tag="support" class="btn btn-sm btn-light border fw-medium"><i class="bi bi-tools text-secondary me-1"></i> IT Support</a>
+                </div>
+            </div>
+
+            <!-- RECOMMENDED IT CAREER TRACKS SECTION -->
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h4 class="fw-bold text-navy mb-0" style="color: #0B1330;">Recommended Debt-Free IT Career Tracks</h4>
+                <a asp-controller="Careers" asp-action="Index" class="text-decoration-none text-success fw-bold small">Explore All 12 Tracks <i class="bi bi-chevron-right"></i></a>
+            </div>
+
+            @foreach (var item in Model.RecommendedCareers)
+            {
+                <div class="career-card">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="stat-icon mint fs-3">
+                                <i class="bi @(item.Career.Icon ?? "bi-code-slash")"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold text-navy mb-1" style="color: #0B1330;">@item.Career.Title</h5>
+                                <span class="badge-demand me-2">@item.Career.DemandBadge</span>
+                                <span class="badge bg-light text-dark border">@item.MatchPercentage% Match</span>
+                            </div>
+                        </div>
+                        <div class="text-end ms-auto">
+                            <div class="salary-tag">@item.Career.AvgSalaryRange</div>
+                            <small class="text-muted d-block">avg starting stipend / salary</small>
+                        </div>
+                    </div>
+
+                    <p class="text-secondary small mb-3">@item.Career.Summary</p>
+
+                    <div class="alert alert-light border py-2 px-3 mb-3 small text-muted">
+                        <i class="bi bi-info-circle text-success me-1"></i> <strong>Why this fits you:</strong> @item.FitReason
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="fact-chip"><i class="bi bi-clock"></i> Timeline: @item.Career.DurationToStart</span>
+                        <span class="fact-chip"><i class="bi bi-tag"></i> Cost: @item.Career.CostEstimate</span>
+                        <span class="fact-chip"><i class="bi bi-graph-up"></i> Hiring: High Demand</span>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 pt-2 border-top">
+                        <div class="d-flex gap-1 flex-wrap">
+                            @foreach (var tag in item.Career.Tags)
+                            {
+                                <span class="badge bg-light text-secondary border">#@tag.Tag</span>
+                            }
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary btn-bookmark-toggle" data-type="career" data-id="@item.Career.Id">
+                                <i class="bi bi-bookmark me-1"></i> Bookmark
+                            </button>
+                            <a asp-controller="Careers" asp-action="Details" asp-route-id="@item.Career.Id" class="btn btn-navy px-4 py-2 btn-sm fw-bold">
+                                View Roadmap <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- 4-STAGE LEARNING & PROGRESS MILESTONE STEPPER -->
+            <div class="card border-0 shadow-sm rounded-4 p-4 mt-4 bg-white">
+                <h5 class="fw-bold text-navy mb-1" style="color:#0B1330;">4-Stage Learning & Progress Roadmap</h5>
+                <p class="text-muted small mb-3">Track your transition from assessment to job placement.</p>
+
+                <div class="milestone-stepper">
+                    <div class="milestone-step completed">
+                        <div class="milestone-node"><i class="bi bi-check-lg"></i></div>
+                        <div class="milestone-title">1. Self-Assessment</div>
+                        <div class="milestone-sub text-success fw-semibold">Assessment Done</div>
+                    </div>
+                    <div class="milestone-step completed">
+                        <div class="milestone-node"><i class="bi bi-check-lg"></i></div>
+                        <div class="milestone-title">2. Tech Fundamentals</div>
+                        <div class="milestone-sub text-success fw-semibold">Modules Active</div>
+                    </div>
+                    <div class="milestone-step active">
+                        <div class="milestone-node">3</div>
+                        <div class="milestone-title">3. Guided Projects</div>
+                        <div class="milestone-sub text-primary fw-semibold">2 Projects Built</div>
+                    </div>
+                    <div class="milestone-step locked">
+                        <div class="milestone-node"><i class="bi bi-lock-fill"></i></div>
+                        <div class="milestone-title">4. Job Placement</div>
+                        <div class="milestone-sub text-muted">Ready for Hire</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SKILLS SELECTION & ROLE EXPLORER SECTION (50+ SKILLS) -->
+            <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 mt-4 bg-white" id="skillsSelectionSection">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                    <div>
+                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-pill fw-bold mb-2 small">
+                            <i class="bi bi-cpu-fill me-1"></i> SKILLS-BASED CAREER EXPLORER
+                        </span>
+                        <h4 class="fw-bold text-navy mb-1" style="color: #0B1330;">Select Your Skills & See What You Can Do</h4>
+                        <p class="text-muted small mb-0">Choose one or more skills from over 50+ tech categories to instantly discover suitable career paths, project goals, and job roles ("What you want to do").</p>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="btnClearSkills">
+                        <i class="bi bi-x-circle me-1"></i> Clear Selection
+                    </button>
+                </div>
+
+                <!-- SEARCH & CATEGORY FILTER -->
+                <div class="row g-2 mb-3">
+                    <div class="col-md-7">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" id="skillSearchInput" class="form-control bg-light border-start-0" placeholder="Search 50+ skills (e.g. Python, SQL, JavaScript, Docker...)" />
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <select id="skillCategoryFilter" class="form-select bg-light">
+                            <option value="all">All Skill Categories</option>
+                            <option value="languages">Programming Languages</option>
+                            <option value="web">Web & Frontend</option>
+                            <option value="backend">Backend & Databases</option>
+                            <option value="cloud">Cloud, DevOps & Cyber</option>
+                            <option value="data">Data, AI & Analytics</option>
+                            <option value="testing">QA, Support & Tools</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 50+ SKILLS PILLS GRID -->
+                <div class="card bg-light border-0 p-3 rounded-3 mb-4" style="max-height: 230px; overflow-y: auto;">
+                    <div class="d-flex flex-wrap gap-2" id="skillsChipContainer">
+                        <!-- Languages -->
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Python" data-category="languages"><i class="bi bi-filetype-py me-1"></i> Python</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="JavaScript" data-category="languages"><i class="bi bi-filetype-js me-1"></i> JavaScript</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="SQL" data-category="backend"><i class="bi bi-database me-1"></i> SQL</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="HTML5" data-category="web"><i class="bi bi-filetype-html me-1"></i> HTML5</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="CSS3" data-category="web"><i class="bi bi-filetype-css me-1"></i> CSS3</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="TypeScript" data-category="languages">TypeScript</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Java" data-category="languages">Java</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="C#" data-category="languages">C# (.NET)</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="C++" data-category="languages">C++</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="PHP" data-category="languages">PHP</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Go (Golang)" data-category="languages">Go</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Rust" data-category="languages">Rust</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Kotlin" data-category="languages">Kotlin</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Swift" data-category="languages">Swift</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="R" data-category="data">R</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Bash / Shell" data-category="cloud">Bash / Shell</button>
+
+                        <!-- Web & Frontend -->
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="React.js" data-category="web">React.js</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Vue.js" data-category="web">Vue.js</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Angular" data-category="web">Angular</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Bootstrap" data-category="web">Bootstrap</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Tailwind CSS" data-category="web">Tailwind CSS</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Next.js" data-category="web">Next.js</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="UI/UX Design" data-category="web">UI/UX Design</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Figma" data-category="web">Figma</button>
+
+                        <!-- Backend & DB -->
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Node.js" data-category="backend">Node.js</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Express.js" data-category="backend">Express.js</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Django" data-category="backend">Django</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="FastAPI" data-category="backend">FastAPI</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Spring Boot" data-category="backend">Spring Boot</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="ASP.NET Core" data-category="backend">ASP.NET Core</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="PostgreSQL" data-category="backend">PostgreSQL</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="MySQL" data-category="backend">MySQL</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="MongoDB" data-category="backend">MongoDB</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Redis" data-category="backend">Redis</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="GraphQL" data-category="backend">GraphQL</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="REST API" data-category="backend">REST API</button>
+
+                        <!-- Data & AI -->
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Pandas / NumPy" data-category="data">Pandas & NumPy</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Power BI" data-category="data">Power BI</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Tableau" data-category="data">Tableau</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Machine Learning" data-category="data">Machine Learning</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Deep Learning" data-category="data">Deep Learning</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="TensorFlow / PyTorch" data-category="data">TensorFlow / PyTorch</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Excel / Advanced Spreadsheets" data-category="data">Excel / Spreadsheets</button>
+
+                        <!-- Cloud, DevOps & Security -->
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="AWS" data-category="cloud">AWS Cloud</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Microsoft Azure" data-category="cloud">Microsoft Azure</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Google Cloud (GCP)" data-category="cloud">GCP</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Docker" data-category="cloud">Docker</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Kubernetes" data-category="cloud">Kubernetes</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Linux Administration" data-category="cloud">Linux Admin</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Ethical Hacking / Cyber" data-category="cloud">Cyber Security</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Network Fundamentals" data-category="cloud">Networking (CCNA)</button>
+
+                        <!-- Tools & Testing -->
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Git & GitHub" data-category="testing"><i class="bi bi-git me-1"></i> Git / GitHub</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Jira & Agile" data-category="testing">Jira / Agile</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Selenium Automation" data-category="testing">Selenium QA</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="Postman API Testing" data-category="testing">Postman QA</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary skill-chip" data-skill="IT Hardware & Helpdesk" data-category="testing">IT Helpdesk Support</button>
+                    </div>
+                </div>
+
+                <!-- RESULTS PANEL: "WHAT YOU WANT TO DO" -->
+                <div class="border rounded-4 p-4" style="background: #F8FAFC;" id="whatYouCanDoContainer">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h5 class="fw-bold text-navy mb-0" style="color: #0B1330;">
+                            <i class="bi bi-compass-fill text-success me-2"></i>What You Want To Do & Career Pathways
+                        </h5>
+                        <span class="badge bg-mint text-white" id="selectedSkillsCountBadge">0 Skills Selected</span>
+                    </div>
+
+                    <div id="selectedSkillsListText" class="text-muted small mb-3">
+                        <em>No skills selected yet. Click on any skill pill above to reveal your matching career options!</em>
+                    </div>
+
+                    <div class="row g-3" id="whatYouCanDoCardsGrid">
+                        <!-- Dynamic Recommendation Cards render here via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR COLUMN -->
+        <div class="col-lg-4">
+            <!-- URGENT FINANCIAL AID CARD -->
+            @if (Model.UrgentAid != null)
+            {
+                <div class="urgent-aid-card mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-danger text-white px-2 py-1"><i class="bi bi-exclamation-triangle-fill me-1"></i> URGENT DEADLINE</span>
+                        <span class="text-danger fw-bold small">12 Days Left</span>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">@Model.UrgentAid.Title</h5>
+                    <p class="text-danger fw-extrabold fs-4 mb-2">@Model.UrgentAid.Amount</p>
+                    <p class="text-secondary small mb-3">@Model.UrgentAid.Description</p>
+                    <a asp-controller="FinancialAid" asp-action="Index" class="btn btn-danger w-100 py-2 fw-bold">
+                        Apply Now & Claim Subsidy <i class="bi bi-box-arrow-up-right ms-1"></i>
+                    </a>
+                </div>
+            }
+
+            <!-- WEEKLY ACTION CHECKLIST -->
+            <div class="checklist-card mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-navy mb-0" style="color:#0B1330;"><i class="bi bi-list-check text-success me-2"></i>Weekly Action Checklist</h5>
+                    <span class="badge bg-light text-dark">3 Tasks</span>
+                </div>
+                <div class="checklist-list">
+                    @foreach (var chk in Model.ChecklistItems)
+                    {
+                        <div class="checklist-item @(chk.IsDone ? "done" : "")">
+                            <input class="form-check-input checklist-checkbox mt-1 me-2" type="checkbox" data-id="@chk.Id" @(chk.IsDone ? "checked" : "") />
+                            <span class="small fw-medium">@chk.ItemText</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- AI MENTOR PREVIEW WIDGET -->
+            <div class="mentor-preview-card mb-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:36px; height:36px;">
+                        <i class="bi bi-robot"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold text-navy mb-0" style="color:#0B1330;">24/7 AI Mentor Assist</h6>
+                        <small class="text-success"><i class="bi bi-circle-fill" style="font-size:8px;"></i> Groq & Gemini Enabled</small>
+                    </div>
+                </div>
+
+                <div id="mentorChatBox" class="chat-box mb-3" style="min-height: 180px; max-height: 250px;">
+                    <div class="chat-msg ai">
+                        <div>Hello @(Model.Student.FullName ?? Model.Student.Username)! What IT career path or learning resource can I help you explore today?</div>
+                        <span class="provider-badge">AI MENTOR</span>
+                    </div>
+                    @foreach (var msg in Model.RecentMentorMessages)
+                    {
+                        <div class="chat-msg @msg.Sender">
+                            <div>@msg.Message</div>
+                            @if (msg.Sender == "ai")
+                            {
+                                <span class="provider-badge">AI MENTOR</span>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <form id="mentorChatForm" class="d-flex gap-2">
+                    <input type="text" id="mentorMessageInput" class="form-control form-control-sm" placeholder="Ask your AI Mentor..." required />
+                    <button type="submit" class="btn btn-mint btn-sm px-3 fw-bold"><i class="bi bi-send-fill"></i></button>
+                </form>
+                <div class="text-center mt-2">
+                    <a asp-controller="Mentor" asp-action="Index" class="text-decoration-none small text-success fw-bold">Open Full Screen Chat <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- NEED IMMEDIATE HELP CARD -->
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-light">
+                <h6 class="fw-bold text-dark mb-2"><i class="bi bi-headset me-2 text-primary"></i>Need Immediate Support?</h6>
+                <p class="text-muted small mb-2">Connect with our dedicated student helpline advisors.</p>
+                <div class="d-flex flex-column gap-2">
+                    <a href="https://wa.me/919876543210" target="_blank" class="btn btn-outline-success btn-sm w-100 text-start">
+                        <i class="bi bi-whatsapp me-2"></i> WhatsApp Student Desk
+                    </a>
+                    <a href="tel:1800123456" class="btn btn-outline-primary btn-sm w-100 text-start">
+                        <i class="bi bi-telephone me-2"></i> Toll-Free Helpline 1800-123-456
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM FULL-WIDTH MINT BANNER -->
+    <div class="mint-bottom-banner">
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-white text-success rounded-circle d-flex align-items-center justify-content-center fs-3" style="width:50px; height:50px;">
+                <i class="bi bi-laptop"></i>
+            </div>
+            <div>
+                <h5 class="fw-bold mb-1">Free Laptops & Connectivity Assistance Schemes</h5>
+                <p class="mb-0 small" style="opacity: 0.9;">Explore verified government and foundation subsidies for underprivileged IT students across India.</p>
+            </div>
+        </div>
+        <a asp-controller="FinancialAid" asp-action="Index" class="btn btn-light text-success fw-bold px-4 py-2 rounded-3 shadow-sm">
+            Claim Available Subsidy <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Master career mapping dataset for selected skills
+        const roleDatabase = [
+            {
+                id: "web_dev",
+                title: "Full Stack & Web Developer",
+                skills: ["HTML5", "CSS3", "JavaScript", "TypeScript", "React.js", "Vue.js", "Angular", "Bootstrap", "Tailwind CSS", "Next.js", "Node.js", "Express.js", "PHP", "ASP.NET Core"],
+                icon: "bi-code-slash",
+                salary: "₹25k - ₹60k/mo",
+                whatYouWillDo: [
+                    "Build responsive websites, interactive user dashboards, and web applications",
+                    "Design seamless front-end interfaces connected to database APIs",
+                    "Develop web systems for small businesses, startups, or global tech clients"
+                ],
+                tag: "Web Development"
+            },
+            {
+                id: "backend_dev",
+                title: "Backend & Systems Engineer",
+                skills: ["Python", "SQL", "Java", "C#", "C++", "Go (Golang)", "Rust", "Node.js", "Django", "FastAPI", "Spring Boot", "ASP.NET Core", "PostgreSQL", "MySQL", "MongoDB", "Redis", "GraphQL", "REST API"],
+                icon: "bi-server",
+                salary: "₹30k - ₹75k/mo",
+                whatYouWillDo: [
+                    "Construct high-performance server logic, API endpoints, and authentication engines",
+                    "Manage relational and NoSQL databases, query optimization, and caching",
+                    "Ensure software scalability, data security, and server reliability"
+                ],
+                tag: "Backend & Data Engines"
+            },
+            {
+                id: "data_ai",
+                title: "Data Analyst & AI/ML Specialist",
+                skills: ["Python", "SQL", "R", "Pandas / NumPy", "Power BI", "Tableau", "Machine Learning", "Deep Learning", "TensorFlow / PyTorch", "Excel / Advanced Spreadsheets"],
+                icon: "bi-graph-up-arrow",
+                salary: "₹28k - ₹70k/mo",
+                whatYouWillDo: [
+                    "Clean, process, and analyze raw datasets to generate business insights",
+                    "Build machine learning models for forecasting, pattern recognition, and AI chatbots",
+                    "Create interactive executive dashboards using SQL, Power BI, and Python"
+                ],
+                tag: "Data Science & AI"
+            },
+            {
+                id: "cloud_devops",
+                title: "Cloud & DevOps Administrator",
+                skills: ["Linux Administration", "Bash / Shell", "AWS", "Microsoft Azure", "Google Cloud (GCP)", "Docker", "Kubernetes", "Git & GitHub"],
+                icon: "bi-cloud-check",
+                salary: "₹32k - ₹80k/mo",
+                whatYouWillDo: [
+                    "Deploy applications to AWS/Azure cloud infrastructure automatically",
+                    "Manage containerized microservices using Docker and Kubernetes",
+                    "Maintain continuous integration pipelines (CI/CD) and server uptime"
+                ],
+                tag: "Cloud Infrastructure"
+            },
+            {
+                id: "cyber_sec",
+                title: "Cyber Security & Network Engineer",
+                skills: ["Linux Administration", "Bash / Shell", "Ethical Hacking / Cyber", "Network Fundamentals", "Python", "SQL"],
+                icon: "bi-shield-lock-fill",
+                salary: "₹30k - ₹85k/mo",
+                whatYouWillDo: [
+                    "Protect corporate networks, databases, and websites against cyber attacks",
+                    "Perform security audits, vulnerability scanning, and penetration tests",
+                    "Configure firewalls, VPNs, and secure user access protocols"
+                ],
+                tag: "Cyber Security"
+            },
+            {
+                id: "mobile_dev",
+                title: "Mobile App Developer (iOS / Android)",
+                skills: ["JavaScript", "TypeScript", "React.js", "Kotlin", "Swift", "Java", "REST API"],
+                icon: "bi-phone",
+                salary: "₹25k - ₹65k/mo",
+                whatYouWillDo: [
+                    "Craft Android and iOS applications with smooth touch interfaces",
+                    "Integrate mobile features like GPS, push notifications, and camera sensors",
+                    "Publish apps to Google Play Store and Apple App Store"
+                ],
+                tag: "Mobile Development"
+            },
+            {
+                id: "ui_ux",
+                title: "UI/UX Product Designer",
+                skills: ["UI/UX Design", "Figma", "HTML5", "CSS3", "Bootstrap", "Tailwind CSS"],
+                icon: "bi-palette",
+                salary: "₹22k - ₹55k/mo",
+                whatYouWillDo: [
+                    "Design visual wireframes, app prototypes, and user experience journeys in Figma",
+                    "Conduct user research to simplify complex software screens",
+                    "Collaborate with developers to deliver visually stunning web & app UI"
+                ],
+                tag: "Product Design"
+            },
+            {
+                id: "qa_support",
+                title: "QA Automation & IT Technical Support",
+                skills: ["Git & GitHub", "Jira & Agile", "Selenium Automation", "Postman API Testing", "IT Hardware & Helpdesk", "SQL"],
+                icon: "bi-tools",
+                salary: "₹18k - ₹45k/mo",
+                whatYouWillDo: [
+                    "Execute automated and manual test scripts to catch software bugs before release",
+                    "Troubleshoot hardware, OS, networking, and software issues for team members",
+                    "Manage ticket workflows in Jira and support IT client desktop systems"
+                ],
+                tag: "QA & IT Ops"
+            }
+        ];
+
+        let selectedSkills = new Set();
+
+        const skillChips = document.querySelectorAll('.skill-chip');
+        const searchInput = document.getElementById('skillSearchInput');
+        const categoryFilter = document.getElementById('skillCategoryFilter');
+        const btnClear = document.getElementById('btnClearSkills');
+        const countBadge = document.getElementById('selectedSkillsCountBadge');
+        const listText = document.getElementById('selectedSkillsListText');
+        const cardsGrid = document.getElementById('whatYouCanDoCardsGrid');
+
+        // Toggle Skill selection
+        skillChips.forEach(chip => {
+            chip.addEventListener('click', function () {
+                const skill = this.dataset.skill;
+                if (selectedSkills.has(skill)) {
+                    selectedSkills.delete(skill);
+                    this.classList.remove('btn-primary', 'text-white');
+                    this.classList.add('btn-outline-primary');
+                } else {
+                    selectedSkills.add(skill);
+                    this.classList.remove('btn-outline-primary');
+                    this.classList.add('btn-primary', 'text-white');
+                }
+                updateRecommendations();
+            });
+        });
+
+        // Clear All Skills
+        btnClear.addEventListener('click', function () {
+            selectedSkills.clear();
+            skillChips.forEach(chip => {
+                chip.classList.remove('btn-primary', 'text-white');
+                chip.classList.add('btn-outline-primary');
+            });
+            updateRecommendations();
+        });
+
+        // Search Filter
+        searchInput.addEventListener('input', filterChips);
+        categoryFilter.addEventListener('change', filterChips);
+
+        function filterChips() {
+            const query = searchInput.value.toLowerCase().trim();
+            const cat = categoryFilter.value;
+
+            skillChips.forEach(chip => {
+                const skillName = chip.dataset.skill.toLowerCase();
+                const skillCat = chip.dataset.category;
+
+                const matchesQuery = query === '' || skillName.includes(query);
+                const matchesCat = cat === 'all' || skillCat === cat;
+
+                if (matchesQuery && matchesCat) {
+                    chip.classList.remove('d-none');
+                } else {
+                    chip.classList.add('d-none');
+                }
+            });
+        }
+
+        // Render "What You Want To Do" pathways based on selected skills
+        function updateRecommendations() {
+            const selectedArray = Array.from(selectedSkills);
+            countBadge.innerText = `${selectedArray.length} Skill${selectedArray.length === 1 ? '' : 's'} Selected`;
+
+            if (selectedArray.length === 0) {
+                listText.innerHTML = '<em>No skills selected yet. Click on any skill pill above (e.g. Python, SQL, JavaScript) to reveal your matching career options!</em>';
+                cardsGrid.innerHTML = `
+                    <div class="col-12 text-center py-4">
+                        <i class="bi bi-hand-index-thumb display-5 text-muted opacity-50 mb-2"></i>
+                        <p class="text-muted small mb-0">Select skills like <strong>Python, SQL, JavaScript, React, AWS</strong> to instantly calculate what roles you can pursue.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listText.innerHTML = `<strong>Active Skills:</strong> ${selectedArray.map(s => `<span class="badge bg-primary me-1 mb-1">${s}</span>`).join(' ')}`;
+
+            // Match roles
+            const matchedRoles = roleDatabase.map(role => {
+                const overlap = role.skills.filter(s => selectedSkills.has(s));
+                const matchScore = overlap.length;
+                return { role, overlap, matchScore };
+            }).filter(item => item.matchScore > 0)
+              .sort((a, b) => b.matchScore - a.matchScore);
+
+            if (matchedRoles.length === 0) {
+                cardsGrid.innerHTML = `
+                    <div class="col-12 text-center py-4">
+                        <div class="alert alert-warning border-0 rounded-3 mb-0">
+                            <i class="bi bi-info-circle me-1"></i> You selected skills that span multiple domains! Try selecting complementary skills or explore our general <strong>Web Development</strong> and <strong>Backend Engineering</strong> roadmaps.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            cardsGrid.innerHTML = matchedRoles.map(item => {
+                const r = item.role;
+                const tasksHtml = r.whatYouWillDo.map(task => `<li class="mb-1"><i class="bi bi-check2-circle text-success me-2"></i>${task}</li>`).join('');
+                
+                return `
+                    <div class="col-md-6">
+                        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white hover-shadow transition-all border-start border-4 border-success">
+                            <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="stat-icon mint fs-3">
+                                        <i class="bi ${r.icon}"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="fw-bold text-navy mb-0" style="color:#0B1330;">${r.title}</h5>
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 small mt-1">
+                                            ${item.matchScore} Matching Skill${item.matchScore > 1 ? 's' : ''}
+                                        </span>
+                                    </div>
+                                </div>
+                                <span class="salary-tag">${r.salary}</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <span class="fw-bold text-dark small d-block mb-1"><i class="bi bi-stars text-warning me-1"></i>What You Will Do in this Role:</span>
+                                <ul class="list-unstyled text-secondary small ps-1 mb-0">
+                                    ${tasksHtml}
+                                </ul>
+                            </div>
+
+                            <div class="pt-3 border-top mt-auto d-flex align-items-center justify-content-between">
+                                <div class="d-flex flex-wrap gap-1">
+                                    ${item.overlap.map(s => `<span class="badge bg-light text-primary border me-1">#${s}</span>`).join('')}
+                                </div>
+                                <a href="/Careers" class="btn btn-navy btn-sm px-3 fw-bold flex-shrink-0">
+                                    Explore Pathway <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Initialize default view
+        updateRecommendations();
+    });
+</script>
+}
+

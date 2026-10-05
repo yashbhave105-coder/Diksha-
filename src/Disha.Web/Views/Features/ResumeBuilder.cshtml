@@ -1,0 +1,171 @@
+@{
+    ViewData["Title"] = "1-Click Fresher Resume & Portfolio Builder - Disha";
+    var user = ViewBag.User as Disha.Web.Models.Entities.User;
+    var careers = ViewBag.Careers as List<Disha.Web.Models.Entities.Career> ?? new();
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-success text-white px-3 py-1 rounded-pill fw-bold">📄 1-Click Builder</span>
+                <span class="badge bg-mint text-white px-3 py-1 rounded-pill fw-bold">ATS Optimized for Freshers</span>
+            </div>
+            <h2 class="fw-bold text-navy mb-1" style="color: #0B1330;">Fresher Resume & Single-Page Portfolio</h2>
+            <p class="text-muted mb-0">Build an impressive, clean resume highlighting projects and free certifications with zero prior job experience.</p>
+        </div>
+
+        <button class="btn btn-navy fw-bold px-4 py-2" onclick="window.print()">
+            <i class="bi bi-printer-fill me-1"></i> Print / Save as PDF
+        </button>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left: Input Controls -->
+        <div class="col-lg-5 d-print-none">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+                <h5 class="fw-bold text-navy mb-3"><i class="bi bi-sliders me-1"></i> Customize Your Resume</h5>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Full Name</label>
+                    <input type="text" class="form-control" id="inpName" value="@(user?.Username ?? "Rahul Sharma")" oninput="updateResume()" />
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <label class="form-label small fw-bold">Email</label>
+                        <input type="text" class="form-control" id="inpEmail" value="@(user?.Email ?? "student@disha.in")" oninput="updateResume()" />
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small fw-bold">Location</label>
+                        <input type="text" class="form-control" id="inpLocation" value="@(user?.State ?? "Maharashtra, India")" oninput="updateResume()" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Target Job Title</label>
+                    <select class="form-select" id="inpTitle" onchange="updateResume()">
+                        @foreach (var c in careers)
+                        {
+                            <option value="@c.Title">@c.Title</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Career Objective / Summary</label>
+                    <textarea class="form-control" id="inpObjective" rows="3" oninput="updateResume()">Dedicated first-generation learner with strong practical fundamentals in HTML, CSS, JavaScript, and Git. Seeking an entry-level technical role to contribute to software delivery while continuing hands-on growth.</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Key Project 1 (Title & Description)</label>
+                    <input type="text" class="form-control mb-1" id="inpProj1Title" value="Community Aid & Food Ration Portal" oninput="updateResume()" />
+                    <textarea class="form-control" id="inpProj1Desc" rows="2" oninput="updateResume()">Built a responsive web dashboard allowing local families to check ration stock availability. Implemented mobile-first CSS and live search filtering.</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Technical Skills (Comma separated)</label>
+                    <input type="text" class="form-control" id="inpSkills" value="HTML5, CSS3, JavaScript (ES6+), Git & GitHub, Responsive Design, REST APIs" oninput="updateResume()" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Live A4 Resume Preview -->
+        <div class="col-lg-7">
+            <div class="card border shadow-lg rounded-4 p-5 bg-white mx-auto" style="max-width: 800px; min-height: 850px; font-family: 'Inter', sans-serif;">
+                <!-- Header -->
+                <div class="border-bottom pb-4 mb-4 text-center">
+                    <h2 class="fw-bold text-dark mb-1" id="resName">Rahul Sharma</h2>
+                    <h5 class="text-primary fw-semibold mb-2" id="resTitle">Junior Frontend Developer</h5>
+                    <div class="small text-muted d-flex justify-content-center gap-3 flex-wrap">
+                        <span><i class="bi bi-envelope me-1"></i><span id="resEmail">student@disha.in</span></span>
+                        <span><i class="bi bi-geo-alt me-1"></i><span id="resLocation">Pune, India</span></span>
+                        <span><i class="bi bi-github me-1"></i>github.com/rahul-dev</span>
+                    </div>
+                </div>
+
+                <!-- Profile Summary -->
+                <div class="mb-4">
+                    <h6 class="fw-bold text-uppercase text-secondary border-bottom pb-1 mb-2" style="letter-spacing:1px;">Professional Summary</h6>
+                    <p class="small text-dark leading-relaxed mb-0" id="resObjective">
+                        Dedicated first-generation learner with strong practical fundamentals in HTML, CSS, JavaScript, and Git. Seeking an entry-level technical role to contribute to software delivery while continuing hands-on growth.
+                    </p>
+                </div>
+
+                <!-- Technical Skills -->
+                <div class="mb-4">
+                    <h6 class="fw-bold text-uppercase text-secondary border-bottom pb-1 mb-2" style="letter-spacing:1px;">Core Competencies</h6>
+                    <div class="d-flex flex-wrap gap-1" id="resSkillsContainer">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Hands-on Projects -->
+                <div class="mb-4">
+                    <h6 class="fw-bold text-uppercase text-secondary border-bottom pb-1 mb-2" style="letter-spacing:1px;">Key Practical Projects</h6>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong class="text-dark" id="resProj1Title">Community Aid & Food Ration Portal</strong>
+                            <span class="badge bg-light text-dark border">Independent Project</span>
+                        </div>
+                        <p class="small text-muted mb-0" id="resProj1Desc">
+                            Built a responsive web dashboard allowing local families to check ration stock availability. Implemented mobile-first CSS and live search filtering.
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <strong class="text-dark">Responsive Portfolio & AI Mockup</strong>
+                            <span class="badge bg-light text-dark border">Personal Project</span>
+                        </div>
+                        <p class="small text-muted mb-0">
+                            Deployed a single-page responsive portfolio on GitHub Pages with interactive dark/light mode toggle and accessible forms.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Education & Certifications -->
+                <div>
+                    <h6 class="fw-bold text-uppercase text-secondary border-bottom pb-1 mb-2" style="letter-spacing:1px;">Education & Free Certifications</h6>
+                    <div class="d-flex justify-content-between mb-1">
+                        <strong class="text-dark small">Government Polytechnic / Higher Secondary</strong>
+                        <span class="small text-muted">2023 - 2026</span>
+                    </div>
+                    <p class="small text-muted mb-2">First Class with Distinction</p>
+
+                    <div class="small text-muted">
+                        • <strong>freeCodeCamp Certification:</strong> Responsive Web Design (300 Hours)<br />
+                        • <strong>Disha Platform:</strong> Completed IT Career Foundations & Skill Tree Badges
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function updateResume() {
+        document.getElementById('resName').textContent = document.getElementById('inpName').value || 'Rahul Sharma';
+        document.getElementById('resTitle').textContent = document.getElementById('inpTitle').value;
+        document.getElementById('resEmail').textContent = document.getElementById('inpEmail').value;
+        document.getElementById('resLocation').textContent = document.getElementById('inpLocation').value;
+        document.getElementById('resObjective').textContent = document.getElementById('inpObjective').value;
+        document.getElementById('resProj1Title').textContent = document.getElementById('inpProj1Title').value;
+        document.getElementById('resProj1Desc').textContent = document.getElementById('inpProj1Desc').value;
+
+        const skillsStr = document.getElementById('inpSkills').value;
+        const skillsArr = skillsStr.split(',').map(s => s.trim()).filter(s => s);
+        const container = document.getElementById('resSkillsContainer');
+        container.innerHTML = '';
+        skillsArr.forEach(sk => {
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-light text-dark border px-2 py-1';
+            badge.textContent = sk;
+            container.appendChild(badge);
+        });
+    }
+
+    updateResume();
+</script>
+}

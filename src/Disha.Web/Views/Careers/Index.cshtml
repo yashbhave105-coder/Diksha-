@@ -1,0 +1,106 @@
+@model List<Disha.Web.Models.Entities.Career>
+@{
+    ViewData["Title"] = "All IT Careers - Disha";
+    string? selectedTag = ViewData["SelectedTag"] as string;
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold text-navy mb-1" style="color: #0B1330;">Explore Debt-Free IT Careers</h2>
+            <p class="text-muted mb-0">Browse all 12 IT career tracks optimized for quick entry and zero tuition debt.</p>
+        </div>
+        <a asp-controller="Quiz" asp-action="Index" class="btn btn-mint fw-bold px-4 py-2">
+            <i class="bi bi-card-checklist me-1"></i> Take Fit Quiz
+        </a>
+    </div>
+
+    <!-- QUICK MATCH TAG FILTER TILES -->
+    <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+            <span class="fw-bold text-dark small">Filter by IT Skill Domain:</span>
+            <div class="form-check form-switch small">
+                <input class="form-check-input" type="checkbox" id="mobileFriendlyToggle" onchange="toggleMobileOnly(this)">
+                <label class="form-check-label fw-bold text-success" for="mobileFriendlyToggle">
+                    <i class="bi bi-phone-fill me-1"></i> Smartphone-Only & Low-Data Friendly (No Laptop Needed to Start)
+                </label>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <a asp-action="Index" class="btn btn-sm @(string.IsNullOrEmpty(selectedTag) ? "btn-navy" : "btn-light border") fw-medium">All IT Tracks</a>
+            <a asp-action="Index" asp-route-tag="frontend" class="btn btn-sm @(selectedTag == "frontend" ? "btn-mint text-white" : "btn-light border") fw-medium"><i class="bi bi-code-slash me-1"></i> Frontend Dev</a>
+            <a asp-action="Index" asp-route-tag="backend" class="btn btn-sm @(selectedTag == "backend" ? "btn-mint text-white" : "btn-light border") fw-medium"><i class="bi bi-server me-1"></i> Backend Dev</a>
+            <a asp-action="Index" asp-route-tag="data" class="btn btn-sm @(selectedTag == "data" ? "btn-mint text-white" : "btn-light border") fw-medium"><i class="bi bi-bar-chart-line me-1"></i> Data Analytics</a>
+            <a asp-action="Index" asp-route-tag="security" class="btn btn-sm @(selectedTag == "security" ? "btn-mint text-white" : "btn-light border") fw-medium"><i class="bi bi-shield-lock me-1"></i> Cybersecurity</a>
+            <a asp-action="Index" asp-route-tag="cloud" class="btn btn-sm @(selectedTag == "cloud" ? "btn-mint text-white" : "btn-light border") fw-medium"><i class="bi bi-cloud-upload me-1"></i> Cloud Systems</a>
+            <a asp-action="Index" asp-route-tag="support" class="btn btn-sm @(selectedTag == "support" ? "btn-mint text-white" : "btn-light border") fw-medium"><i class="bi bi-tools me-1"></i> IT Support</a>
+            <a asp-action="Index" asp-route-tag="qa" class="btn btn-sm @(selectedTag == "qa" ? "btn-mint text-white" : "btn-light border") fw-medium"><i class="bi bi-bug me-1"></i> QA & Testing</a>
+            <a asp-action="Index" asp-route-tag="design" class="btn btn-sm @(selectedTag == "design" ? "btn-mint text-white" : "btn-light border") fw-medium"><i class="bi bi-palette me-1"></i> UI/UX Design</a>
+        </div>
+    </div>
+
+    <!-- CAREER CARDS GRID -->
+    <div class="row g-4">
+        @foreach (var c in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-4 d-flex flex-column" style="background:#ffffff; border:1px solid #E2E8F0;">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="stat-icon mint fs-3">
+                            <i class="bi @(c.Icon ?? "bi-code-slash")"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-navy mb-0" style="color: #0B1330;">@c.Title</h5>
+                            <span class="badge-demand">@c.DemandBadge</span>
+                        </div>
+                    </div>
+
+                    <p class="text-secondary small mb-3 flex-grow-1">@c.Summary</p>
+
+                    <div class="bg-light p-2 rounded-3 mb-3 text-center">
+                        <span class="salary-tag fs-5">@c.AvgSalaryRange</span>
+                        <small class="text-muted d-block" style="font-size:0.75rem;">Average starting salary</small>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="fact-chip"><i class="bi bi-clock"></i> @c.DurationToStart</span>
+                        <span class="fact-chip"><i class="bi bi-cash"></i> @c.CostEstimate</span>
+                        @if (c.Title.Contains("Support", StringComparison.OrdinalIgnoreCase) || 
+                             c.Title.Contains("QA", StringComparison.OrdinalIgnoreCase) || 
+                             c.Title.Contains("Frontend", StringComparison.OrdinalIgnoreCase) || 
+                             c.Title.Contains("Data", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25"><i class="bi bi-phone"></i> Mobile Learn Friendly</span>
+                        }
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto">
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-bookmark-toggle" data-type="career" data-id="@c.Id">
+                            <i class="bi bi-bookmark"></i>
+                        </button>
+                        <a asp-action="Details" asp-route-id="@c.Id" class="btn btn-navy btn-sm px-4 fw-bold">
+                            View Roadmap <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function toggleMobileOnly(checkbox) {
+        const cards = document.querySelectorAll('.row.g-4 > div');
+        cards.forEach(card => {
+            if (checkbox.checked) {
+                const isMobile = card.innerText.includes('Mobile Learn Friendly') || card.innerText.includes('IT Support') || card.innerText.includes('QA') || card.innerText.includes('Frontend');
+                card.style.display = isMobile ? '' : 'none';
+            } else {
+                card.style.display = '';
+            }
+        });
+    }
+</script>
+}
+

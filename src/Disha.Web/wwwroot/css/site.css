@@ -1,0 +1,376 @@
+/* DISHA IT CAREER GUIDANCE PORTAL - DESIGN SYSTEM */
+:root {
+  --bs-primary: #0B1330;
+  --bs-primary-rgb: 11, 19, 48;
+  --bs-accent: #1DB88E;
+  --bs-accent-hover: #169b76;
+  --bs-body-bg: #F5F7FB;
+  --bs-font-sans-serif: 'Inter', system-ui, -apple-system, sans-serif;
+  --disha-navy-dark: #070D24;
+  --disha-navy-card: #0B1330;
+  --disha-mint: #1DB88E;
+  --disha-mint-light: #E8F8F4;
+  --disha-mint-dark: #128264;
+  --disha-gray-bg: #F5F7FB;
+  --disha-card-shadow: 0 4px 20px rgba(11, 19, 48, 0.06);
+  --disha-card-radius: 16px;
+}
+
+body {
+  background-color: var(--disha-gray-bg);
+  color: #1E293B;
+  font-family: var(--bs-font-sans-serif);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* NAVBAR */
+.navbar-disha {
+  background-color: #ffffff;
+  border-bottom: 1px solid #E2E8F0;
+  padding: 0.75rem 1.5rem;
+}
+.navbar-disha .navbar-brand {
+  font-weight: 800;
+  font-size: 1.35rem;
+  color: #0B1330;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.navbar-disha .brand-badge {
+  background-color: var(--disha-mint);
+  color: #ffffff;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.navbar-disha .nav-link {
+  color: #475569;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.navbar-disha .nav-link:hover, .navbar-disha .nav-link.active {
+  color: var(--disha-mint-dark);
+  font-weight: 600;
+}
+
+/* HERO SECTION - DEEP NAVY HEADER */
+.hero-navy-card {
+  background: linear-gradient(135deg, #070D24 0%, #0B1330 60%, #111C47 100%);
+  color: #ffffff;
+  border-radius: 20px;
+  padding: 2.25rem 2.5rem;
+  box-shadow: 0 10px 30px rgba(7, 13, 36, 0.2);
+  margin-bottom: 1.75rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero-navy-card h1 {
+  font-size: 2.1rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+}
+.hero-navy-card .hero-subtitle {
+  color: #CBD5E1;
+  font-size: 1.05rem;
+  max-width: 620px;
+  margin-bottom: 1.5rem;
+}
+.hero-navy-card .progress-ring-card {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  color: #ffffff;
+}
+
+/* STAT CARDS */
+.stat-card {
+  background: #ffffff;
+  border-radius: var(--disha-card-radius);
+  padding: 1.35rem 1.5rem;
+  box-shadow: var(--disha-card-shadow);
+  border: 1px solid #EDF2F7;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(11, 19, 48, 0.1);
+}
+.stat-card .stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+}
+.stat-icon.mint { background: #E8F8F4; color: #1DB88E; }
+.stat-icon.orange { background: #FFF4E5; color: #FF9800; }
+.stat-icon.purple { background: #F3E8FF; color: #9C27B0; }
+.stat-icon.blue { background: #E3F2FD; color: #2196F3; }
+
+/* RECOMMENDED CAREER CARDS */
+.career-card {
+  background: #ffffff;
+  border-radius: var(--disha-card-radius);
+  border: 1px solid #E2E8F0;
+  box-shadow: var(--disha-card-shadow);
+  padding: 1.75rem;
+  margin-bottom: 1.25rem;
+  transition: all 0.2s ease;
+}
+.career-card:hover {
+  border-color: var(--disha-mint);
+  box-shadow: 0 10px 30px rgba(29, 184, 142, 0.12);
+}
+.career-card .salary-tag {
+  color: #128264;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+.career-card .fact-chip {
+  background: #F1F5F9;
+  color: #334155;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* HORIZONTAL MILESTONE STEPPER */
+.milestone-stepper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  padding: 1.5rem 0;
+  margin: 1.5rem 0;
+}
+.milestone-stepper::before {
+  content: '';
+  position: absolute;
+  top: 38px;
+  left: 10%;
+  right: 10%;
+  height: 4px;
+  background: #E2E8F0;
+  z-index: 1;
+}
+.milestone-step {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  flex: 1;
+}
+.milestone-node {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #CBD5E1;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem auto;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+.milestone-step.completed .milestone-node {
+  background: var(--disha-mint);
+  border-color: var(--disha-mint);
+  color: #ffffff;
+}
+.milestone-step.active .milestone-node {
+  background: #0B1330;
+  border-color: var(--disha-mint);
+  color: #ffffff;
+  box-shadow: 0 0 0 6px rgba(29, 184, 142, 0.25);
+}
+.milestone-step.locked .milestone-node {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #94A3B8;
+}
+.milestone-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #1E293B;
+  margin-bottom: 0.25rem;
+}
+.milestone-sub {
+  font-size: 0.8rem;
+  color: #64748B;
+}
+
+/* SIDEBAR CARDS */
+.urgent-aid-card {
+  background: #FFF5F5;
+  border: 1px solid #FEB2B2;
+  border-radius: var(--disha-card-radius);
+  padding: 1.35rem;
+}
+.checklist-card {
+  background: #ffffff;
+  border-radius: var(--disha-card-radius);
+  border: 1px solid #E2E8F0;
+  padding: 1.35rem;
+  box-shadow: var(--disha-card-shadow);
+}
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid #F1F5F9;
+}
+.checklist-item:last-child {
+  border-bottom: none;
+}
+.checklist-item.done span {
+  text-decoration: line-through;
+  color: #94A3B8;
+}
+
+/* AI MENTOR WIDGET & CHAT */
+.mentor-preview-card {
+  background: #ffffff;
+  border-radius: var(--disha-card-radius);
+  border: 1px solid #E2E8F0;
+  box-shadow: var(--disha-card-shadow);
+  padding: 1.35rem;
+}
+.chat-box {
+  background: #F8FAFC;
+  border-radius: 12px;
+  padding: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.chat-msg {
+  max-width: 82%;
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.chat-msg.user {
+  align-self: flex-end;
+  background: #0B1330;
+  color: #ffffff;
+  border-bottom-right-radius: 2px;
+}
+.chat-msg.ai {
+  align-self: flex-start;
+  background: #ffffff;
+  border: 1px solid #E2E8F0;
+  color: #0F172A;
+  border-bottom-left-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.chat-msg .provider-badge {
+  font-size: 0.65rem;
+  background: #E8F8F4;
+  color: #128264;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-weight: 700;
+  margin-top: 0.35rem;
+  display: inline-block;
+}
+
+/* BUTTONS & BADGES */
+.btn-mint {
+  background-color: var(--disha-mint);
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+  min-height: 44px;
+  padding: 0.6rem 1.35rem;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+.btn-mint:hover {
+  background-color: var(--bs-accent-hover);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+.btn-navy {
+  background-color: #0B1330;
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+  min-height: 44px;
+  padding: 0.6rem 1.35rem;
+  border-radius: 10px;
+}
+.btn-navy:hover {
+  background-color: #162456;
+  color: #ffffff;
+}
+
+.badge-demand {
+  background: #E8F8F4;
+  color: #128264;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 6px;
+}
+
+/* BOTTOM FULL-WIDTH MINT BANNER */
+.mint-bottom-banner {
+  background: linear-gradient(135deg, #1DB88E 0%, #149673 100%);
+  color: #ffffff;
+  border-radius: 18px;
+  padding: 1.75rem 2.25rem;
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* RESPONSIVE FIXES (360px SUPPORT) */
+@media (max-width: 576px) {
+  .hero-navy-card {
+    padding: 1.5rem 1.25rem;
+  }
+  .hero-navy-card h1 {
+    font-size: 1.5rem;
+  }
+  .milestone-stepper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+  .milestone-stepper::before {
+    display: none;
+  }
+  .milestone-step {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+  }
+  .milestone-node {
+    margin: 0;
+  }
+}

@@ -1,0 +1,85 @@
+@model List<Disha.Web.Models.Entities.FinancialAid>
+@{
+    ViewData["Title"] = "Financial Aid & Laptop Subsidies - Disha";
+    var bookmarkedIds = ViewData["BookmarkedIds"] as List<int> ?? new();
+    var user = ViewData["User"] as Disha.Web.Models.Entities.User;
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold text-navy mb-1" style="color: #0B1330;">Financial Aid & Device Assistance</h2>
+            <p class="text-muted mb-0">Verified scholarships, laptop subsidies, and internet grants for underprivileged IT learners.</p>
+        </div>
+        <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill fw-bold">
+            <i class="bi bi-patch-check-fill me-1"></i> Verified Grants Active
+        </span>
+    </div>
+
+    <!-- ELIGIBILITY RADAR & WHATSAPP ALERT CARD -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-navy text-white mb-4">
+        <div class="row align-items-center g-3">
+            <div class="col-lg-8">
+                <span class="badge bg-mint text-white mb-2 fw-bold"><i class="bi bi-whatsapp me-1"></i> Never Miss a Deadline</span>
+                <h4 class="fw-bold mb-1">Financial Aid Radar & Deadline Notification</h4>
+                <p class="text-light text-opacity-80 small mb-0">
+                    Get free WhatsApp or SMS reminders 3 days before state scholarship and free laptop application deadlines close.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <button class="btn btn-mint fw-bold px-4 py-2 text-white shadow-sm" onclick="subscribeAidRadar()">
+                    <i class="bi bi-bell-fill me-1"></i> Turn On WhatsApp Alert
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AID CARDS LIST -->
+    <div class="row g-4">
+        @foreach (var aid in Model)
+        {
+            bool isBookmarked = bookmarkedIds.Contains(aid.Id);
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white d-flex flex-column" style="border: 1px solid #E2E8F0;">
+                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                        <div>
+                            <span class="badge bg-light text-secondary border mb-2">@aid.Provider</span>
+                            <h5 class="fw-bold text-navy mb-1" style="color: #0B1330;">@aid.Title</h5>
+                        </div>
+                        <span class="text-success fw-extrabold fs-4 text-nowrap">@aid.Amount</span>
+                    </div>
+
+                    <p class="text-secondary small mb-3">@aid.Description</p>
+
+                    <div class="alert alert-light border p-3 rounded-3 mb-3 small">
+                        <strong class="text-dark"><i class="bi bi-shield-check text-success me-1"></i> Plain Language Eligibility:</strong>
+                        <p class="mb-0 text-muted">@aid.Eligibility</p>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-auto flex-wrap gap-2">
+                        <small class="text-muted"><i class="bi bi-calendar-check me-1"></i> Verified as of @(aid.LastVerifiedDate?.ToString("MMM dd, yyyy") ?? "Recent")</small>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm @(isBookmarked ? "btn-warning" : "btn-outline-secondary") btn-bookmark-toggle" data-type="aid" data-id="@aid.Id">
+                                <i class="bi @(isBookmarked ? "bi-bookmark-fill" : "bi-bookmark")"></i>
+                            </button>
+                            <a href="@aid.ApplyUrl" target="_blank" class="btn btn-mint btn-sm px-4 fw-bold">
+                                Apply / Claim Subsidy <i class="bi bi-box-arrow-up-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function subscribeAidRadar() {
+        const phone = prompt("Enter your 10-digit mobile number for WhatsApp alerts:", "");
+        if (phone && phone.trim().length >= 10) {
+            alert(`✅ Success! WhatsApp alerts activated for +91 ${phone.trim()}. You will receive deadline updates 3 days in advance.`);
+        }
+    }
+</script>
+}

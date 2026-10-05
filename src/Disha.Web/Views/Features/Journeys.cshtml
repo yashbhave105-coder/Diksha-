@@ -1,0 +1,81 @@
+@model List<Disha.Web.Controllers.CommunityStory>
+@{
+    ViewData["Title"] = "First-Gen Journey Wall - Disha";
+}
+
+<div class="container py-4">
+    <div class="text-center max-w-700 mx-auto mb-5">
+        <span class="badge bg-mint text-white px-3 py-2 rounded-pill fw-bold mb-2">
+            <i class="bi bi-people-fill me-1"></i> Real Proof & Inspiration
+        </span>
+        <h2 class="fw-bold text-navy" style="color: #0B1330;">The First-Gen Journey Wall</h2>
+        <p class="text-muted">
+            Inspiring stories of students from rural towns, municipal colleges, and non-English backgrounds who broke into top IT careers with zero tuition fees.
+        </p>
+    </div>
+
+    <div class="row g-4 mb-5">
+        @foreach (var s in Model)
+        {
+            <div class="col-lg-4">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white d-flex flex-column" style="border: 1px solid #E2E8F0;">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4" style="width:52px; height:52px;">
+                            @s.Name.Substring(0, 1)
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-0 text-navy">@s.Name</h5>
+                            <small class="text-muted"><i class="bi bi-geo-alt-fill text-danger me-1"></i>@s.Hometown</small>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-light rounded-3 mb-3">
+                        <span class="badge bg-success text-white px-2 py-1 rounded mb-1">Current Role</span>
+                        <div class="fw-bold text-dark">@s.CurrentRole</div>
+                        <div class="small text-muted">@s.CompanyType • <strong class="text-success">@s.StartingPackage</strong></div>
+                    </div>
+
+                    <div class="mb-3 flex-grow-1">
+                        <p class="fst-italic text-secondary small mb-3">
+                            <i class="bi bi-quote fs-5 text-muted"></i>@s.Quote"
+                        </p>
+
+                        <div class="small mb-2">
+                            <strong class="text-dark">Starting Hurdle:</strong>
+                            <p class="text-muted mb-2">@s.Background</p>
+                        </div>
+
+                        <div class="small mb-3">
+                            <strong class="text-dark">Breakthrough Strategy:</strong>
+                            <p class="text-muted mb-0">@s.Strategy</p>
+                        </div>
+                    </div>
+
+                    <div class="border-top pt-3 mt-auto">
+                        <small class="fw-bold text-dark d-block mb-2">Free Resources Used:</small>
+                        <div class="d-flex flex-wrap gap-1 mb-3">
+                            @foreach (var res in s.FreeResourcesUsed)
+                            {
+                                <span class="badge bg-light text-dark border px-2 py-1" style="font-size:0.75rem;">@res</span>
+                            }
+                        </div>
+
+                        <button class="btn btn-outline-primary btn-sm w-100 rounded-pill fw-bold" onclick="alert('Sent 👏 Kudos to @s.Name!')">
+                            <i class="bi bi-heart-fill text-danger me-1"></i> Send Kudos & Encouragement
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-navy text-white text-center">
+        <div class="py-2">
+            <h4 class="fw-bold text-white mb-2">Are you a first-generation student with a story to share?</h4>
+            <p class="text-light text-opacity-80 small mb-3">Inspire thousands of school and college students who are standing where you once stood.</p>
+            <button class="btn btn-mint px-4 py-2 rounded-pill fw-bold text-white shadow" onclick="alert('Thank you! Our community coordinator will connect with you.')">
+                <i class="bi bi-pencil-square me-1"></i> Submit Your Journey
+            </button>
+        </div>
+    </div>
+</div>

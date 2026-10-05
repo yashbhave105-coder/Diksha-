@@ -1,0 +1,208 @@
+@model Disha.Web.Models.Entities.Career
+@{
+    ViewData["Title"] = "AI Mock Interview Practice - Disha";
+    var careers = ViewBag.Careers as List<Disha.Web.Models.Entities.Career> ?? new();
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-primary px-3 py-1 rounded-pill fw-bold"><i class="bi bi-person-video3 me-1"></i> AI Mock Interviewer</span>
+                <span class="badge bg-mint text-white px-3 py-1 rounded-pill fw-bold">Live AI Feedback</span>
+            </div>
+            <h2 class="fw-bold text-navy mb-1" style="color: #0B1330;">Fresher Interview Simulation Room</h2>
+            <p class="text-muted mb-0">Practice standard entry-level technical and behavioral interview questions with real-time AI critique.</p>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-outline-dark dropdown-toggle px-3 py-2 rounded-pill fw-bold" type="button" data-bs-toggle="dropdown">
+                <i class="bi bi-briefcase me-1"></i> Interview For: @(Model?.Title ?? "Select Role")
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow">
+                @foreach (var c in careers)
+                {
+                    <li><a class="dropdown-item @(c.Id == Model?.Id ? "active" : "")" asp-action="MockInterview" asp-route-careerId="@c.Id">@c.Title</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    @if (Model != null)
+    {
+        <div class="row g-4">
+            <!-- Left: Interviewer AI Persona -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white text-center mb-4">
+                    <div class="bg-navy text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 shadow" style="width:72px; height:72px;">
+                        <i class="bi bi-robot fs-1 text-mint"></i>
+                    </div>
+                    <h5 class="fw-bold text-navy mb-1">Disha AI Interviewer</h5>
+                    <p class="small text-muted mb-3">Simulating an entry-level hiring manager for <strong>@Model.Title</strong></p>
+
+                    <div class="text-start bg-light p-3 rounded-3 small">
+                        <div class="fw-bold text-dark mb-1"><i class="bi bi-shield-check text-success me-1"></i> Safe Space Practice:</div>
+                        <ul class="ps-3 mb-0 text-secondary">
+                            <li>Zero judgment—practice as many times as you like.</li>
+                            <li>Speak or type in simple English or Hinglish.</li>
+                            <li>Receive instant constructive tips on structuring your points.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-light">
+                    <h6 class="fw-bold text-navy mb-2"><i class="bi bi-mic-fill text-danger me-1"></i> Speech / Audio Tip:</h6>
+                    <p class="small text-secondary mb-0">
+                        Use the microphone button below to practice speaking out loud! Speaking clearly is 70% of succeeding in fresher interviews.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right: Questions and Response Box -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-bold" id="qNumBadge">Question 1 of 3</span>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-secondary" onclick="loadQuestion(0)">Q1</button>
+                            <button class="btn btn-outline-secondary" onclick="loadQuestion(1)">Q2</button>
+                            <button class="btn btn-outline-secondary" onclick="loadQuestion(2)">Q3</button>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-navy text-white rounded-3 mb-4 shadow-sm position-relative">
+                        <span class="badge bg-mint text-white mb-2">INTERVIEW QUESTION</span>
+                        <h4 class="fw-bold mb-0" id="currentQuestionText">Loading question...</h4>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="form-label fw-bold text-navy mb-0">Your Answer:</label>
+                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill fw-bold" id="voiceMicBtn">
+                                <i class="bi bi-mic-fill text-danger me-1"></i> Click to Speak (Voice Input)
+                            </button>
+                        </div>
+                        <textarea class="form-control" id="studentAnswerInput" rows="5" placeholder="Explain your thoughts in your own words. Don't worry about perfect grammar!"></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <small class="text-muted"><i class="bi bi-lightbulb me-1"></i> Aim for 2-4 sentences explaining your logic.</small>
+                        <button class="btn btn-mint px-4 py-2 fw-bold text-white shadow-sm" id="submitAnswerBtn">
+                            Get AI Evaluation <i class="bi bi-arrow-right-short ms-1 fs-5"></i>
+                        </button>
+                    </div>
+
+                    <!-- AI Feedback Box -->
+                    <div id="interviewFeedbackBox" class="p-4 rounded-4 bg-light border border-success d-none">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-stars text-warning fs-4"></i>
+                            <h5 class="fw-bold text-navy mb-0">AI Coach Evaluation & Advice</h5>
+                        </div>
+                        <div class="text-secondary" id="feedbackText" style="white-space: pre-wrap;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script>
+    const roleTitle = "@(Model?.Title ?? "Software Engineer")";
+    const questions = [
+        "In simple words, how would you explain what you do in this role to someone with no computer background?",
+        "Tell me about a time you encountered a difficult problem or error in your studies, and how you worked to fix it.",
+        "Why are you interested in starting your career in IT, and what have you taught yourself so far?"
+    ];
+
+    let currentQIdx = 0;
+
+    function loadQuestion(idx) {
+        currentQIdx = idx;
+        document.getElementById('qNumBadge').textContent = `Question ${idx + 1} of 3`;
+        document.getElementById('currentQuestionText').textContent = questions[idx];
+        document.getElementById('studentAnswerInput').value = '';
+        document.getElementById('interviewFeedbackBox').classList.add('d-none');
+    }
+
+    loadQuestion(0);
+
+    // Voice recognition using Web Speech API
+    const micBtn = document.getElementById('voiceMicBtn');
+    let recognition;
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRec();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-IN';
+
+        recognition.onstart = () => {
+            micBtn.className = 'btn btn-sm btn-danger text-white rounded-pill fw-bold';
+            micBtn.innerHTML = '<i class="bi bi-record-circle me-1"></i> Listening... Speak now';
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            const input = document.getElementById('studentAnswerInput');
+            input.value = input.value ? input.value + ' ' + transcript : transcript;
+        };
+
+        recognition.onend = () => {
+            micBtn.className = 'btn btn-sm btn-outline-primary rounded-pill fw-bold';
+            micBtn.innerHTML = '<i class="bi bi-mic-fill text-danger me-1"></i> Click to Speak (Voice Input)';
+        };
+
+        micBtn.onclick = () => {
+            recognition.start();
+        };
+    } else {
+        micBtn.style.display = 'none';
+    }
+
+    // Submit Answer to AI
+    document.getElementById('submitAnswerBtn').onclick = async () => {
+        const answer = document.getElementById('studentAnswerInput').value.trim();
+        if (!answer) {
+            alert('Please type or speak an answer first!');
+            return;
+        }
+
+        const btn = document.getElementById('submitAnswerBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> AI Reviewing...';
+
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+
+        try {
+            const res = await fetch('/Features/SubmitInterviewAnswer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({
+                    careerId: @(Model?.Id ?? 1),
+                    roleTitle: roleTitle,
+                    question: questions[currentQIdx],
+                    answer: answer
+                })
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                const box = document.getElementById('interviewFeedbackBox');
+                document.getElementById('feedbackText').textContent = data.feedback;
+                box.classList.remove('d-none');
+            } else {
+                alert(data.message || 'Error getting feedback.');
+            }
+        } catch (e) {
+            alert('Network error communicating with AI mentor.');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = 'Get AI Evaluation <i class="bi bi-arrow-right-short ms-1 fs-5"></i>';
+        }
+    };
+</script>
+}

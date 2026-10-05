@@ -1,0 +1,136 @@
+@model Disha.Web.Models.ViewModels.QuizViewModel
+@{
+    ViewData["Title"] = "IT Career Assessment Quiz";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-4">
+                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill fw-bold mb-2">
+                    <i class="bi bi-card-checklist me-1"></i> Disha Career Match Engine
+                </span>
+                <h2 class="fw-bold text-navy" style="color: #0B1330;">Interactive IT Career Assessment</h2>
+                <p class="text-muted">Select the option that best matches your natural interests for each question.</p>
+            </div>
+
+            <!-- PROGRESS BAR -->
+            <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold text-navy small" id="quizStepText">Question 1 of @Model.TotalQuestions</span>
+                    <span class="badge bg-success text-white" id="quizPercentText">8% Complete</span>
+                </div>
+                <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-success" id="quizProgressBar" role="progressbar" style="width: 8%;"></div>
+                </div>
+            </div>
+
+            <form asp-controller="Quiz" asp-action="Submit" method="post" id="quizForm">
+                @Html.AntiForgeryToken()
+
+                @for (int i = 0; i < Model.Questions.Count; i++)
+                {
+                    var q = Model.Questions[i];
+                    <div class="quiz-question-card card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white mb-4 @(i == 0 ? "" : "d-none")" data-index="@i">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <span class="badge bg-primary text-white rounded-circle fs-6 d-inline-flex align-items-center justify-content-center" style="width:36px; height:36px;">
+                                #(i + 1)
+                            </span>
+                            <h4 class="fw-bold text-dark mb-0">@q.QuestionText</h4>
+                        </div>
+
+                        <div class="d-flex flex-column gap-3 mt-4">
+                            @foreach (var opt in q.Options)
+                            {
+                                <label class="quiz-option-label card border p-3 rounded-3 cursor-pointer transition-all hover-shadow">
+                                    <div class="form-check d-flex align-items-center gap-3">
+                                        <input class="form-check-input flex-shrink-0 fs-4" type="radio" name="answers[@q.Id]" value="@opt.Id" required />
+                                        <span class="fw-semibold text-dark fs-6">@opt.OptionText</span>
+                                    </div>
+                                </label>
+                            }
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-5 pt-3 border-top">
+                            @if (i > 0)
+                            {
+                                <button type="button" class="btn btn-outline-secondary px-4 py-2 fw-bold btn-prev-question" data-prev="@(i - 1)">
+                                    <i class="bi bi-arrow-left me-1"></i> Previous
+                                </button>
+                            }
+                            else
+                            {
+                                <div></div>
+                            }
+
+                            @if (i < Model.Questions.Count - 1)
+                            {
+                                <button type="button" class="btn btn-mint px-5 py-2 fw-bold btn-next-question" data-next="@(i + 1)">
+                                    Next Question <i class="bi bi-arrow-right ms-1"></i>
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-success btn-lg px-5 py-3 fw-bold text-white shadow-sm">
+                                    Submit & Calculate Results <i class="bi bi-check-circle-fill ms-2"></i>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                }
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const total = @Model.TotalQuestions;
+        const cards = document.querySelectorAll('.quiz-question-card');
+        const progressBar = document.getElementById('quizProgressBar');
+        const stepText = document.getElementById('quizStepText');
+        const percentText = document.getElementById('quizPercentText');
+
+        function showStep(index) {
+            cards.forEach(c => c.classList.add('d-none'));
+            const activeCard = document.querySelector(`.quiz-question-card[data-index="${index}"]`);
+            if (activeCard) {
+                activeCard.classList.remove('d-none');
+            }
+
+            const currentNum = index + 1;
+            const percent = Math.round((currentNum / total) * 100);
+            progressBar.style.width = percent + '%';
+            stepText.innerText = `Question ${currentNum} of ${total}`;
+            percentText.innerText = `${percent}% Complete`;
+
+            window.scrollTo({ top: 100, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('.btn-next-question').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const currentCard = this.closest('.quiz-question-card');
+                const radios = currentCard.querySelectorAll('input[type="radio"]');
+                let answered = false;
+                radios.forEach(r => { if (r.checked) answered = true; });
+
+                if (!answered) {
+                    alert('Please select an option before moving to the next question!');
+                    return;
+                }
+
+                const nextIdx = parseInt(this.dataset.next);
+                showStep(nextIdx);
+            });
+        });
+
+        document.querySelectorAll('.btn-prev-question').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const prevIdx = parseInt(this.dataset.prev);
+                showStep(prevIdx);
+            });
+        });
+    });
+</script>
+}

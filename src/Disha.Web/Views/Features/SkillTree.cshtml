@@ -1,0 +1,274 @@
+@model Disha.Web.Models.Entities.Career
+@{
+    ViewData["Title"] = "RPG Tech Skill Tree - Disha";
+    var careers = ViewBag.Careers as List<Disha.Web.Models.Entities.Career> ?? new();
+}
+
+<style>
+    .skill-tree-node {
+        position: relative;
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid #E2E8F0;
+        cursor: pointer;
+    }
+    .skill-tree-node:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px -10px rgba(0,0,0,0.15);
+    }
+    .skill-tree-node.unlocked {
+        border-color: #10B981;
+        background: linear-gradient(to bottom right, #ffffff, #F0FDF4);
+    }
+    .skill-tree-node.active-quest {
+        border-color: #3B82F6;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        background: #ffffff;
+    }
+    .skill-tree-node.locked {
+        opacity: 0.65;
+        background: #F8FAFC;
+        filter: grayscale(0.5);
+    }
+    .connector-line {
+        width: 4px;
+        height: 36px;
+        background: #CBD5E1;
+        margin: 0 auto;
+    }
+    .connector-line.active {
+        background: #10B981;
+    }
+</style>
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-success px-3 py-1 rounded-pill fw-bold"><i class="bi bi-diagram-3-fill me-1"></i> Interactive RPG Skill Tree</span>
+                <span class="badge bg-light text-dark border px-3 py-1 rounded-pill fw-bold">Zero-to-Hero Quest</span>
+            </div>
+            <h2 class="fw-bold text-navy mb-1" style="color: #0B1330;">Unlock Your Tech Milestones</h2>
+            <p class="text-muted mb-0">Complete free modules, unlock badges, and trace your exact path from absolute beginner to industry hired.</p>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+            <div class="bg-white border rounded-pill px-3 py-2 shadow-sm d-flex align-items-center gap-2">
+                <i class="bi bi-gem text-warning fs-5"></i>
+                <span class="fw-bold text-dark" id="heroXpDisplay">XP: 350 / 1000</span>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-outline-dark dropdown-toggle px-3 py-2 rounded-pill fw-bold" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-briefcase me-1"></i> Path: @(Model?.Title ?? "Select Track")
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow">
+                    @foreach (var c in careers)
+                    {
+                        <li><a class="dropdown-item @(c.Id == Model?.Id ? "active" : "")" asp-action="SkillTree" asp-route-careerId="@c.Id">@c.Title</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    @if (Model != null)
+    {
+        <div class="row g-4">
+            <!-- Left: Tree Canvas -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                    <h5 class="fw-bold text-navy mb-4 d-flex justify-content-between align-items-center" style="color:#0B1330;">
+                        <span>Level Progression: @Model.Title</span>
+                        <span class="badge bg-mint text-white rounded-pill small">4 Milestone Quests</span>
+                    </h5>
+
+                    <!-- Tier 1 -->
+                    <div class="skill-tree-node unlocked p-4" onclick="showNodeDetails(1)">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center fs-4" style="width:48px;height:48px;">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                </div>
+                                <div>
+                                    <span class="badge bg-success bg-opacity-20 text-success fw-bold px-2 py-1 rounded mb-1">COMPLETED • LEVEL 1</span>
+                                    <h5 class="fw-bold mb-0 text-navy">Digital & Logic Foundations</h5>
+                                    <small class="text-secondary">Basic internet terminology, Git version control, how web servers work.</small>
+                                </div>
+                            </div>
+                            <span class="badge bg-light text-success border border-success fw-bold px-3 py-2 rounded-pill">+100 XP</span>
+                        </div>
+                    </div>
+
+                    <div class="connector-line active"></div>
+
+                    <!-- Tier 2 -->
+                    <div class="skill-tree-node unlocked p-4" onclick="showNodeDetails(2)">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center fs-4" style="width:48px;height:48px;">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                </div>
+                                <div>
+                                    <span class="badge bg-success bg-opacity-20 text-success fw-bold px-2 py-1 rounded mb-1">COMPLETED • LEVEL 2</span>
+                                    <h5 class="fw-bold mb-0 text-navy">Core Syntax & Tool Mastery</h5>
+                                    <small class="text-secondary">HTML5, CSS Flexbox/Grid, and responsive layout mobile-first testing.</small>
+                                </div>
+                            </div>
+                            <span class="badge bg-light text-success border border-success fw-bold px-3 py-2 rounded-pill">+250 XP</span>
+                        </div>
+                    </div>
+
+                    <div class="connector-line active"></div>
+
+                    <!-- Tier 3 -->
+                    <div class="skill-tree-node active-quest p-4" onclick="showNodeDetails(3)">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fs-4" style="width:48px;height:48px;">
+                                    <i class="bi bi-play-fill"></i>
+                                </div>
+                                <div>
+                                    <span class="badge bg-primary text-white fw-bold px-2 py-1 rounded mb-1">IN PROGRESS • LEVEL 3</span>
+                                    <h5 class="fw-bold mb-0 text-navy">Interactive Applications & APIs</h5>
+                                    <small class="text-secondary">Modern JavaScript, asynchronous fetch API calls, and DOM manipulation.</small>
+                                </div>
+                            </div>
+                            <span class="badge bg-primary text-white fw-bold px-3 py-2 rounded-pill">Current Quest</span>
+                        </div>
+                    </div>
+
+                    <div class="connector-line"></div>
+
+                    <!-- Tier 4 -->
+                    <div class="skill-tree-node locked p-4" onclick="showNodeDetails(4)">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center fs-4" style="width:48px;height:48px;">
+                                    <i class="bi bi-lock-fill"></i>
+                                </div>
+                                <div>
+                                    <span class="badge bg-secondary text-white fw-bold px-2 py-1 rounded mb-1">LOCKED • LEVEL 4</span>
+                                    <h5 class="fw-bold mb-0 text-dark">Production Portfolio Project</h5>
+                                    <small class="text-secondary">Deploy a live app on GitHub Pages or Vercel with real user authentication.</small>
+                                </div>
+                            </div>
+                            <span class="badge bg-light text-muted border fw-bold px-3 py-2 rounded-pill">Unlocks at Level 3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Node Details & Free Resources -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4 sticky-top" style="top: 80px;" id="nodeDetailsCard">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-compass text-mint fs-4"></i>
+                        <h5 class="fw-bold text-navy mb-0" id="detailTitle">Interactive Applications & APIs</h5>
+                    </div>
+                    <span class="badge bg-primary px-3 py-1 rounded-pill fw-bold w-auto mb-3" id="detailStatus">Level 3 In Progress</span>
+                    <p class="text-secondary small mb-4" id="detailDesc">
+                        Learn how to connect your user interface to real live databases and services using JavaScript `fetch()` and JSON APIs.
+                    </p>
+
+                    <h6 class="fw-bold text-navy mb-3"><i class="bi bi-play-circle-fill text-danger me-1"></i> 100% Free Learning Missions:</h6>
+                    <div class="d-grid gap-2 mb-4" id="detailLinks">
+                        <a href="https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures-v8/" target="_blank" class="btn btn-outline-secondary btn-sm text-start p-2 rounded-3 d-flex align-items-center gap-2">
+                            <i class="bi bi-box-arrow-up-right text-primary"></i>
+                            <div>
+                                <div class="fw-bold text-dark">freeCodeCamp JavaScript Core</div>
+                                <small class="text-muted">Interactive coding in browser (Zero install required)</small>
+                            </div>
+                        </a>
+                        <a href="https://youtube.com" target="_blank" class="btn btn-outline-secondary btn-sm text-start p-2 rounded-3 d-flex align-items-center gap-2">
+                            <i class="bi bi-youtube text-danger fs-5"></i>
+                            <div>
+                                <div class="fw-bold text-dark">JavaScript in Hindi / English</div>
+                                <small class="text-muted">Complete beginner playlist by Chai aur Code</small>
+                            </div>
+                        </a>
+                    </div>
+
+                    <button class="btn btn-mint w-100 fw-bold py-2 text-white shadow-sm" onclick="markCompleted()">
+                        <i class="bi bi-check2-circle me-1"></i> Mark Quest as Completed (+300 XP)
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script>
+    const nodeData = {
+        1: {
+            title: "Digital & Logic Foundations",
+            status: "Completed (+100 XP)",
+            statusClass: "badge bg-success",
+            desc: "Understand computer architecture basics, navigating terminal command line, and saving code history with Git and GitHub.",
+            missions: [
+                { name: "Git & GitHub Beginner Tutorial", sub: "YouTube (Hinglish / English)", link: "https://youtube.com" },
+                { name: "CS50 Introduction to Computer Science", sub: "Free Harvard Course via edX", link: "https://edx.org" }
+            ]
+        },
+        2: {
+            title: "Core Syntax & Tool Mastery",
+            status: "Completed (+250 XP)",
+            statusClass: "badge bg-success",
+            desc: "Build semantic website layouts with modern HTML5 tags, CSS grid systems, and flexbox containers.",
+            missions: [
+                { name: "FreeCodeCamp Responsive Web Design", sub: "300 hours self-paced certification", link: "https://freecodecamp.org" },
+                { name: "Flexbox Froggy Game", sub: "10-minute visual game to master CSS alignment", link: "https://flexboxfroggy.com" }
+            ]
+        },
+        3: {
+            title: "Interactive Applications & APIs",
+            status: "In Progress (Current Quest)",
+            statusClass: "badge bg-primary",
+            desc: "Learn how to connect your user interface to real live databases and services using JavaScript fetch() and JSON APIs.",
+            missions: [
+                { name: "freeCodeCamp JavaScript Core", sub: "Interactive in-browser exercises", link: "https://freecodecamp.org" },
+                { name: "Chai aur Code JavaScript Course", sub: "Comprehensive beginner tutorials in Hindi", link: "https://youtube.com" }
+            ]
+        },
+        4: {
+            title: "Production Portfolio Project",
+            status: "Locked (Prerequisites needed)",
+            statusClass: "badge bg-secondary",
+            desc: "Deploy a live application that solves a real local problem (e.g. ration shop queue tracker, local job board, expense tracker).",
+            missions: [
+                { name: "GitHub Pages Free Hosting", sub: "Deploy your site with zero hosting cost", link: "https://pages.github.com" },
+                { name: "Resume & Portfolio Checklist", sub: "Step-by-step submission guide", link: "/Features/ResumeBuilder" }
+            ]
+        }
+    };
+
+    function showNodeDetails(id) {
+        const data = nodeData[id];
+        if (!data) return;
+        document.getElementById('detailTitle').textContent = data.title;
+        const statusEl = document.getElementById('detailStatus');
+        statusEl.textContent = data.status;
+        statusEl.className = data.statusClass + " px-3 py-1 rounded-pill fw-bold w-auto mb-3";
+        document.getElementById('detailDesc').textContent = data.desc;
+
+        const container = document.getElementById('detailLinks');
+        container.innerHTML = '';
+        data.missions.forEach(m => {
+            const a = document.createElement('a');
+            a.href = m.link;
+            a.target = '_blank';
+            a.className = 'btn btn-outline-secondary btn-sm text-start p-2 rounded-3 d-flex align-items-center gap-2';
+            a.innerHTML = `<i class="bi bi-box-arrow-up-right text-primary"></i><div><div class="fw-bold text-dark">${m.name}</div><small class="text-muted">${m.sub}</small></div>`;
+            container.appendChild(a);
+        });
+    }
+
+    function markCompleted() {
+        alert("🎉 Congratulations! You earned +300 XP! Level 4 Unlocked.");
+        document.getElementById('heroXpDisplay').textContent = "XP: 650 / 1000";
+    }
+</script>
+}

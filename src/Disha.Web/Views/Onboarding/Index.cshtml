@@ -1,0 +1,82 @@
+@model Disha.Web.Models.ViewModels.OnboardingViewModel
+@{
+    ViewData["Title"] = "Student Onboarding";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-4">
+                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill fw-bold mb-2">Step 1 of 2: Profile Preferences</span>
+                <h2 class="fw-bold text-navy" style="color: #0B1330;">Tell Us About Yourself</h2>
+                <p class="text-muted">This helps Disha customize financial aid schemes and IT career track recommendations for you.</p>
+            </div>
+
+            <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white">
+                <form asp-action="Index" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small mb-4"></div>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="EducationLevel" class="form-label fw-bold text-dark"></label>
+                            <select asp-for="EducationLevel" class="form-select form-select-lg">
+                                <option value="Class 10 Pass">Class 10 Pass</option>
+                                <option value="Class 12 Pass">Class 12 Pass</option>
+                                <option value="Diploma">Diploma / ITI Student</option>
+                                <option value="Undergraduate">Undergraduate Degree Student</option>
+                            </select>
+                            <span asp-validation-for="EducationLevel" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="PriorComputerExposure" class="form-label fw-bold text-dark"></label>
+                            <select asp-for="PriorComputerExposure" class="form-select form-select-lg">
+                                <option value="none">No prior computer exposure (Beginner)</option>
+                                <option value="some">Some computer exposure (Smartphone/Basic PC)</option>
+                                <option value="a_lot">A lot of computer exposure (Comfortable with software)</option>
+                            </select>
+                            <span asp-validation-for="PriorComputerExposure" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="State" class="form-label fw-bold text-dark"></label>
+                            <select asp-for="State" class="form-select form-select-lg">
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Delhi">Delhi NCT</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="West Bengal">West Bengal</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Other">Other State / UT</option>
+                            </select>
+                            <span asp-validation-for="State" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="LanguagePref" class="form-label fw-bold text-dark"></label>
+                            <select asp-for="LanguagePref" class="form-select form-select-lg">
+                                <option value="en">English</option>
+                                <option value="hi">Hindi (हिंदी)</option>
+                                <option value="mr">Marathi (मराठी)</option>
+                                <option value="ta">Tamil (தமிழ்)</option>
+                                <option value="te">Telugu (తెలుగు)</option>
+                            </select>
+                            <span asp-validation-for="LanguagePref" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end pt-3 border-top">
+                        <button type="submit" class="btn btn-mint px-5 py-3 fw-bold rounded-3 shadow-sm fs-5">
+                            Save & Start Career Assessment <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

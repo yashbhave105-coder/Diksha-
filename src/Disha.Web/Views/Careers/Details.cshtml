@@ -1,0 +1,144 @@
+@using System.Text.Json
+@model Disha.Web.Models.Entities.Career
+@{
+    ViewData["Title"] = $"{Model.Title} - Career Details & Roadmap";
+    bool isBookmarked = (bool)(ViewData["IsBookmarked"] ?? false);
+    var matchingAid = ViewData["MatchingAid"] as List<Disha.Web.Models.Entities.FinancialAid> ?? new();
+
+    // Parse Roadmap JSON
+    var steps = new List<RoadmapStep>();
+    try
+    {
+        steps = JsonSerializer.Deserialize<List<RoadmapStep>>(Model.RoadmapJson) ?? new();
+    }
+    catch { }
+}
+
+@functions {
+    public class RoadmapStep
+    {
+        public int step_number { get; set; }
+        public string title { get; set; } = string.Empty;
+        public string description { get; set; } = string.Empty;
+        public bool is_completed { get; set; }
+    }
+}
+
+<div class="container py-4">
+    <a asp-action="Index" class="text-decoration-none text-muted fw-bold mb-3 d-inline-block">
+        <i class="bi bi-arrow-left me-1"></i> Back to All IT Careers
+    </a>
+
+    <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white mb-4">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon mint fs-2" style="width:60px; height:60px;">
+                    <i class="bi @(Model.Icon ?? "bi-code-slash")"></i>
+                </div>
+                <div>
+                    <span class="badge-demand me-2">@Model.DemandBadge</span>
+                    <h2 class="fw-bold text-navy mb-1" style="color: #0B1330;">@Model.Title</h2>
+                    <p class="text-muted mb-0">@Model.Summary</p>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn @(isBookmarked ? "btn-warning" : "btn-outline-secondary") btn-bookmark-toggle" data-type="career" data-id="@Model.Id">
+                    <i class="bi @(isBookmarked ? "bi-bookmark-fill" : "bi-bookmark") me-1"></i> @(isBookmarked ? "Saved" : "Save Career")
+                </button>
+            </div>
+        </div>
+
+        <hr class="my-4" />
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="p-3 bg-light rounded-3 text-center border">
+                    <small class="text-muted text-uppercase fw-bold">Avg Starting Salary</small>
+                    <h4 class="salary-tag mb-0">@Model.AvgSalaryRange</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 bg-light rounded-3 text-center border">
+                    <small class="text-muted text-uppercase fw-bold">Estimated Duration</small>
+                    <h4 class="fw-bold text-navy mb-0" style="color:#0B1330;">@Model.DurationToStart</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-3 bg-light rounded-3 text-center border">
+                    <small class="text-muted text-uppercase fw-bold">Education Cost</small>
+                    <h4 class="fw-bold text-success mb-0">@Model.CostEstimate</h4>
+                </div>
+            </div>
+        </div>
+
+        <h4 class="fw-bold text-navy mb-3" style="color: #0B1330;">Career Description & Overview</h4>
+        <p class="text-secondary leading-relaxed mb-4">@Model.Description</p>
+
+        <!-- HORIZONTAL MILESTONE STEPPER MATCHING SPECIFICATION -->
+        <h4 class="fw-bold text-navy mb-3" style="color: #0B1330;">Step-by-Step Learning Milestone Stepper</h4>
+        <div class="milestone-stepper mb-4">
+            @for (int i = 0; i < steps.Count; i++)
+            {
+                var s = steps[i];
+                string stepClass = s.is_completed ? "completed" : (i == 2 ? "active" : "locked");
+                <div class="milestone-step @stepClass">
+                    <div class="milestone-node">
+                        @if (s.is_completed)
+                        {
+                            <i class="bi bi-check-lg"></i>
+                        }
+                        else if (i == 2)
+                        {
+                            <span>3</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-lock-fill"></i>
+                        }
+                    </div>
+                    <div class="milestone-title">@s.title</div>
+                    <div class="milestone-sub">@s.description</div>
+                </div>
+            }
+        </div>
+
+        <!-- DETAILED STEP CARDS -->
+        <div class="row g-3">
+            @foreach (var s in steps)
+            {
+                <div class="col-md-6">
+                    <div class="card border p-3 rounded-3 h-100 bg-light">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="badge @(s.is_completed ? "bg-success" : "bg-navy") text-white">Step @s.step_number</span>
+                            <h6 class="fw-bold text-dark mb-0">@s.title</h6>
+                        </div>
+                        <p class="text-muted small mb-0">@s.description</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- MATCHING FINANCIAL AID PANEL -->
+    @if (matchingAid.Any())
+    {
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <h4 class="fw-bold text-navy mb-3" style="color:#0B1330;"><i class="bi bi-gift-fill text-success me-2"></i>Matched Financial Aid & Laptop Grants for this Track</h4>
+            <div class="row g-3">
+                @foreach (var aid in matchingAid.Take(3))
+                {
+                    <div class="col-md-4">
+                        <div class="card border p-3 rounded-3 h-100 bg-light">
+                            <h6 class="fw-bold text-dark mb-1">@aid.Title</h6>
+                            <p class="text-success fw-bold small mb-2">@aid.Amount</p>
+                            <p class="text-muted small mb-3">@aid.Eligibility</p>
+                            <a href="@aid.ApplyUrl" target="_blank" class="btn btn-sm btn-outline-success w-100 fw-bold">
+                                View Aid Details <i class="bi bi-box-arrow-up-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

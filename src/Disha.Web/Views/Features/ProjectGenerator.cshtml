@@ -1,0 +1,190 @@
+@{
+    ViewData["Title"] = "AI Portfolio Project Generator & Budget Calculator - Disha";
+    var careers = ViewBag.Careers as List<Disha.Web.Models.Entities.Career> ?? new();
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-mint text-white px-3 py-1 rounded-pill fw-bold"><i class="bi bi-lightbulb-fill me-1"></i> AI Portfolio Lab</span>
+                <span class="badge bg-navy text-white px-3 py-1 rounded-pill fw-bold">₹0 Free Tier Infrastructure</span>
+            </div>
+            <h2 class="fw-bold text-navy mb-1" style="color: #0B1330;">AI Project Generator & Cloud Budget Calculator</h2>
+            <p class="text-muted mb-0">Generate practical portfolio projects that solve genuine local problems, and calculate exact ₹0 deployment costs.</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <!-- Project Idea Generator Card -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white h-100 d-flex flex-column">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:40px; height:40px;">
+                        <i class="bi bi-magic fs-5"></i>
+                    </div>
+                    <h4 class="fw-bold text-navy mb-0" style="color:#0B1330;">Custom Project Generator</h4>
+                </div>
+                <p class="text-secondary small mb-4">
+                    Tell Disha your target field and interests. Our AI will produce a non-trivial portfolio idea that recruiters love to see on a fresher's resume.
+                </p>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Target Track</label>
+                    <select class="form-select" id="projTrackSelect">
+                        @foreach (var c in careers)
+                        {
+                            <option value="@c.Title">@c.Title</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Theme / Local Problem Space</label>
+                    <input type="text" class="form-control" id="projInterestInput" placeholder="e.g. Ration distribution, farming price tracker, public bus timings" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-bold">Hardware & Data Limit</label>
+                    <select class="form-select" id="projConstraintSelect">
+                        <option value="Only smartphone with 1.5GB daily data">Smartphone only (Mobile Coding on Replit)</option>
+                        <option value="Old 4GB RAM laptop with slow broadband">Old 4GB RAM laptop (Lightweight VS Code/Browser)</option>
+                        <option value="College lab / cyber cafe desktop (weekend only)">Cyber Café / Public Lab desktop access</option>
+                        <option value="Standard home laptop with regular Wi-Fi">Standard PC / Laptop with regular Wi-Fi</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-mint fw-bold py-2 text-white shadow-sm mb-4" id="generateProjBtn">
+                    <i class="bi bi-stars me-1"></i> Generate Portfolio Project
+                </button>
+
+                <!-- AI Output Box -->
+                <div id="projectResultBox" class="p-3 bg-light rounded-4 border border-success d-none flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 mb-2 text-success fw-bold">
+                        <i class="bi bi-check-circle-fill"></i> Custom Project Blueprint
+                    </div>
+                    <div class="small text-secondary" id="projectResultContent" style="white-space: pre-wrap;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Budget & Zero-Cost Cloud Calculator -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white h-100 d-flex flex-column">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width:40px; height:40px;">
+                        <i class="bi bi-calculator fs-5"></i>
+                    </div>
+                    <h4 class="fw-bold text-navy mb-0" style="color:#0B1330;">Zero-Debt IT Learning Cost Estimator</h4>
+                </div>
+                <p class="text-secondary small mb-4">
+                    See exactly how you can build, host, and deploy production software with <strong>₹0 in debt</strong> using permanent generous developer free-tiers.
+                </p>
+
+                <!-- Cost Breakdown Table -->
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered table-sm align-middle small mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Category</th>
+                                <th>Free Tier Tool Used</th>
+                                <th>Cost to Student</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Code Editor & IDE</strong></td>
+                                <td>VS Code / Replit / GitHub Codespaces (60 hrs/mo)</td>
+                                <td class="text-success fw-bold">₹0 Free</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Website Hosting</strong></td>
+                                <td>GitHub Pages / Vercel / Netlify (Unlimited static)</td>
+                                <td class="text-success fw-bold">₹0 Free</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Database & Backend</strong></td>
+                                <td>Supabase (Free 500MB) / Render / Neon Postgres</td>
+                                <td class="text-success fw-bold">₹0 Free</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Domain & SSL</strong></td>
+                                <td><code>.github.io</code> or <code>.vercel.app</code> with free HTTPS</td>
+                                <td class="text-success fw-bold">₹0 Free</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Learning Tutorials</strong></td>
+                                <td>freeCodeCamp / YouTube / Coursera Financial Aid</td>
+                                <td class="text-success fw-bold">₹0 Free</td>
+                            </tr>
+                        </tbody>
+                        <tfoot class="table-success">
+                            <tr>
+                                <th colspan="2">Total Out-of-Pocket Expense</th>
+                                <th class="text-success fs-6">₹0 / month</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div class="p-3 bg-light rounded-3 border-start border-4 border-mint mb-3">
+                    <h6 class="fw-bold text-navy mb-1"><i class="bi bi-info-circle me-1 text-mint"></i> Only Real Expense: Data Pack</h6>
+                    <p class="small text-muted mb-0">
+                        A typical 1.5GB/day mobile recharge (₹250-₹300/month) is all that's required to stream audio/video tutorials and sync Git code.
+                    </p>
+                </div>
+
+                <div class="mt-auto">
+                    <a asp-controller="Features" asp-action="ResumeBuilder" class="btn btn-navy w-100 fw-bold py-2">
+                        Add Projects to Your Resume <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.getElementById('generateProjBtn').onclick = async () => {
+        const track = document.getElementById('projTrackSelect').value;
+        const interest = document.getElementById('projInterestInput').value.trim();
+        const constraint = document.getElementById('projConstraintSelect').value;
+
+        const btn = document.getElementById('generateProjBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> AI Designing Blueprint...';
+
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+
+        try {
+            const res = await fetch('/Features/GenerateProjectIdea', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({
+                    track: track,
+                    interest: interest || 'Local community problem',
+                    deviceConstraint: constraint
+                })
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                const box = document.getElementById('projectResultBox');
+                document.getElementById('projectResultContent').textContent = data.result;
+                box.classList.remove('d-none');
+            } else {
+                alert(data.message || 'Error creating project blueprint.');
+            }
+        } catch (e) {
+            alert('Failed to connect to AI server.');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-stars me-1"></i> Generate Portfolio Project';
+        }
+    };
+</script>
+}

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Disha IT Career Guidance Portal</title>
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <!-- Custom Disha CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    @Html.AntiForgeryToken()
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-disha sticky-top">
+            <div class="container-fluid px-lg-4">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-compass-fill text-success fs-4"></i>
+                    <span>Disha</span>
+                    <span class="brand-badge ms-1">IT CAREER PORTAL</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-lg-1">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "active" : "")" asp-controller="Dashboard" asp-action="Index">
+                                    <i class="bi bi-grid-1x2-fill me-1"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Quiz" ? "active" : "")" asp-controller="Quiz" asp-action="Index">
+                                    <i class="bi bi-card-checklist me-1"></i> Assessment
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Careers" ? "active" : "")" asp-controller="Careers" asp-action="Index">
+                                    <i class="bi bi-briefcase-fill me-1"></i> IT Careers
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "FinancialAid" ? "active" : "")" asp-controller="FinancialAid" asp-action="Index">
+                                    <i class="bi bi-gift-fill me-1"></i> Financial Aid
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Mentor" ? "active" : "")" asp-controller="Mentor" asp-action="Index">
+                                    <i class="bi bi-robot me-1"></i> AI Mentor
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-primary fw-bold" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-stars text-warning me-1"></i> Interactive Tools
+                                </a>
+                                <ul class="dropdown-menu shadow-sm">
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="DayInLife"><i class="bi bi-controller text-danger me-2"></i> Day-in-the-Life Simulator</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="SkillTree"><i class="bi bi-diagram-3 text-success me-2"></i> RPG Tech Skill Tree</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="MockInterview"><i class="bi bi-person-video3 text-primary me-2"></i> AI Mock Interviewer</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="ProjectGenerator"><i class="bi bi-magic text-warning me-2"></i> AI Project Generator & Cloud Calc</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="ResumeBuilder"><i class="bi bi-file-earmark-person text-info me-2"></i> 1-Click Fresher Resume</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="DailyCodeBite"><i class="bi bi-fire text-danger me-2"></i> Daily 60s Code Bite</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="Journeys"><i class="bi bi-people text-secondary me-2"></i> First-Gen Journey Wall</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="TechHubs"><i class="bi bi-geo-alt text-dark me-2"></i> Free Local IT Hubs Directory</a></li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-primary fw-bold" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-stars text-warning me-1"></i> Free Tools & Stories
+                                </a>
+                                <ul class="dropdown-menu shadow-sm">
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="DayInLife"><i class="bi bi-controller text-danger me-2"></i> Day-in-the-Life Simulator</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="SkillTree"><i class="bi bi-diagram-3 text-success me-2"></i> RPG Tech Skill Tree</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="ProjectGenerator"><i class="bi bi-magic text-warning me-2"></i> AI Project Generator & Cloud Calc</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="ResumeBuilder"><i class="bi bi-file-earmark-person text-info me-2"></i> 1-Click Fresher Resume</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="DailyCodeBite"><i class="bi bi-fire text-danger me-2"></i> Daily 60s Code Bite</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="Journeys"><i class="bi bi-people text-secondary me-2"></i> First-Gen Journey Wall</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Features" asp-action="TechHubs"><i class="bi bi-geo-alt text-dark me-2"></i> Free Local IT Hubs Directory</a></li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+
+                    <div class="d-flex align-items-center gap-3">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle d-flex align-items-center gap-2 border rounded-pill px-3" type="button" data-bs-toggle="dropdown">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width:32px; height:32px; font-size: 0.85rem;">
+                                        @(User.Identity.Name?.Substring(0, 1).ToUpper() ?? "S")
+                                    </div>
+                                    <span class="fw-semibold small">@User.Identity.Name</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                    <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-person me-2"></i> My Profile</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Onboarding" asp-action="Index"><i class="bi bi-sliders me-2"></i> Update Preferences</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i> Log Out</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-primary px-3 rounded-pill fw-semibold" asp-controller="Account" asp-action="Login">Log In</a>
+                            <a class="btn btn-mint px-4 rounded-pill fw-semibold" asp-controller="Account" asp-action="Register">Sign Up Free</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="pb-5">
+        @RenderBody()
+    </main>
+
+    <footer class="bg-white border-top py-4 mt-auto">
+        <div class="container text-center text-muted small">
+            <p class="mb-1 fw-semibold text-dark">Disha — IT Career Guidance Portal for Underprivileged Students</p>
+            <p class="mb-0">100% Free & Debt-Free Technical Roadmaps | Powered by AI Mentor & Local MySQL</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/mentor-chat.js" asp-append-version="true"></script>
+    <script src="~/js/checklist.js" asp-append-version="true"></script>
+    <script src="~/js/bookmark.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
